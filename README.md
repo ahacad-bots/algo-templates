@@ -2,6 +2,35 @@
 
 # 常用头部处理
 
+## 快速输入输出
+
+```cpp
+template <typename T>
+inline T read() {
+    char ch = getchar();
+    T x = 0, f = 1;
+    while (ch < '0' || ch > '9') {
+        if (ch == '-') f = -1;
+        ch = getchar();
+    }
+    while ('0' <= ch && ch <= '9') {
+        x = x * 10 + ch - '0';
+        ch = getchar();
+    }
+    return x * f;
+}
+template <class T>
+inline void write(T x) {
+    if (x < 0) x = -x, putchar('-');  // 负数输出
+    static T sta[35];
+    T top = 0;
+    do {
+        sta[top++] = x % 10, x /= 10;
+    } while (x);
+    while (top) putchar(sta[--top] + '0');
+}
+```
+
 ## defines
  
 ```cpp
@@ -27,6 +56,17 @@ ll pow(ll base, ll power, ll p) {
     }
     return result;
 }
+```
+
+## gcdlcd
+
+```cpp
+ll gcd(ll a, ll b) {
+    while (b ^= a ^= b ^= a %= b)
+        ;
+    return a;
+}
+ll lcd(ll a, ll b) { return a * b / gcd(a, b); }
 ```
 
 # 树
