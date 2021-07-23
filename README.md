@@ -33,6 +33,8 @@ ll pow(ll base, ll power, ll p) {
 
 ## 线段树
 
+树写法，比较直观。
+
 ```cpp
 struct node {
     int s, e, m;
@@ -80,7 +82,21 @@ struct node {
 };
 ```
 
+数组写法 TODO
+
+```cpp
+
+```
+
 ## 树链剖分
+
+- $fa(x)$: 父节点
+- $dep(x)$: 节点深度
+- $siz(x)$: 子树节点个数
+- $son(x)$: 重子节点
+- $top(x)$: x 所在重链的顶部节点
+- $dfn(x)$: x 的 dfs 序、线段树中编号
+- $rnk(x)$: dfs 序对应的节点编号，dfn 反函数
 
 ```cpp
 const int maxn = 1e5 + 5;
