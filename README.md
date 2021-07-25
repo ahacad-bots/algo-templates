@@ -132,7 +132,7 @@ struct node {
 
 ```cpp
 struct bit {
-    int t1[maxn], t2[maxn], n;
+    int t1[maxn], t2[maxn], n; // !!!: 注意要初始化 n 为你想要设置的数量上限
     
     void _add(int k, int v) {
       int v1 = k * v;
