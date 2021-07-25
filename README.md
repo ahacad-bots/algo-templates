@@ -132,7 +132,7 @@ struct node {
 
 ```cpp
 struct bit {
-    int t1[MAXN], t2[MAXN], n;
+    int t1[maxn], t2[maxn], n;
     
     void _add(int k, int v) {
       int v1 = k * v;
@@ -156,7 +156,7 @@ struct bit {
       return (r + 1ll) * _getsum(t1, r) - 1ll * l * _getsum(t1, l - 1) -
              (_getsum(t2, r) - _getsum(t2, l - 1));
     }
-}
+};
 ```
 
 
