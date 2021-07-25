@@ -186,7 +186,7 @@ inline void add_edge(int x, int y) {
 }
 void dfs1(int o) {
     son[o] = -1;                         // 重儿子初始化
-    siz[0] = 1;                          // 子树节点数量初始化
+    siz[o] = 1;                          // 子树节点数量初始化
     for (int j = h[o]; j; j = nxt[j]) {  // 遍历儿子
         if (!dep[p[j]]) {                // 还没有访问过、故深度为0
             dep[p[j]] = dep[o] + 1;
@@ -217,5 +217,11 @@ int lca(int u, int v) { // 找公共祖先
       v = fa[top[v]];
   }
   return dep[u] > dep[v] ? v : u;
+}
+
+void init() {
+    dep[1] = 1; // 注意根节点深度要初始化为 1
+    dfs(1);
+    dfs2(1, 1);
 }
 ```
