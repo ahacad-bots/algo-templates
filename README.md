@@ -227,6 +227,77 @@ void init() {
 }
 ```
 
+再来多写一个树剖后的线段树查询，注意这里 `dfs2` 里面需要额外多一步 `nw[cnt] = w[o]` 来为树上节点初始化权重。
+
+```cpp
+#define ls u << 1
+#define rs u << 1 | 1
+struct node {
+    int l, r, maxv, sum;
+} tr[maxn << 2];
+void build(int u, int l, int r) {
+    tr[u] = {l, r, nw[r], nw[r]};
+    if (l == r) return;
+    int mid = (l + r) >> 1;
+    build(ls, l, mid), build(rs, mid + 1, r);
+    tr[u].sum = tr[ls].sum + tr[rs].sum;
+    tr[u].maxv = max(tr[ls].maxv, tr[rs].maxv);
+}
+void upd(int u, int x, int v) {
+    if (tr[u].l == tr[u].r) {
+        tr[u].maxv = tr[u].sum = v;
+        return;
+    }
+    int mid = (tr[u].l + tr[u].r) >> 1;
+    if (x <= mid) {
+        upd(ls, x, v);
+    } else {
+        upd(rs, x, v);
+    }
+    tr[u].sum = tr[ls].sum + tr[rs].sum;
+    tr[u].maxv = max(tr[ls].maxv, tr[rs].maxv);
+}
+int query_sum(int u, int l, int r) {
+    if (l <= tr[u].l && tr[u].r <= r) return tr[u].sum;
+    int mid = (tr[u].l + tr[u].r) >> 1;
+    int res = 0;
+    if (l <= mid) res += query_sum(ls, l, r);
+    if (r > mid) res += query_sum(rs, l, r);
+    return res;
+}
+int query_max(int u, int l, int r) {
+    if (l <= tr[u].l && tr[u].r <= r) return tr[u].maxv;
+    int mid = (tr[u].l + tr[u].r) >> 1;
+    int res = -1e9;
+    if (l <= mid) res = query_max(ls, l, r);
+    if (r > mid) res = max(res, query_max(rs, l, r));
+    return res;
+}
+
+int qsum(int x, int y) {
+    int res = 0;
+    while (top[x] != top[y]) {
+        if (dep[top[x]] < dep[top[y]]) swap(x, y);
+        res += query_sum(1, dfn[top[x]], dfn[x]);
+        x = fa[top[x]];
+    }
+    if (dep[x] > dep[y]) swap(x, y);
+    res += query_sum(1, dfn[x], dfn[y]);
+    return res;
+}
+int qmax(int x, int y) {
+    int res = -1e9;
+    while (top[x] != top[y]) {
+        if (dep[top[x]] < dep[top[y]]) swap(x, y);
+        res = max(res, query_max(1, dfn[top[x]], dfn[x]));
+        x = fa[top[x]];
+    }
+    if (dep[x] > dep[y]) swap(x, y);
+    res = max(res, query_max(1, dfn[x], dfn[y]));
+    return res;
+}
+```
+
 # 图
 
 
