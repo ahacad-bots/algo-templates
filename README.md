@@ -221,6 +221,7 @@ int lca(int u, int v) { // 找公共祖先
 
 void init() {
     dep[1] = 1; // 注意根节点深度要初始化为 1
+    fa[1] = 1;
     dfs1(1);
     dfs2(1, 1);
 }
