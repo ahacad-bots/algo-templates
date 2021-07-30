@@ -272,8 +272,11 @@ int qmax(int x, int y) {
 
 # 图
 
-
 ## 匈牙利算法（二分图最大匹配）
+
+```cpp
+
+```
 
 
 # 数学
@@ -301,7 +304,7 @@ struct Complex {
     }
 } f[MAXN], g[MAXN], p[MAXN];
 int n, m, lim = 1, maxn, rev[MAXN], a[MAXN], b[MAXN];
-inl void FFT(Complex *A, int opt) {
+inline void FFT(Complex *A, int opt) {
     for (int i = 0; i < lim; i++)
         if (i < rev[i]) swap(A[i], A[rev[i]]);
     for (int mid = 1; mid < lim; mid <<= 1) {
