@@ -321,7 +321,8 @@ inline void FFT(Complex *A, int opt) {
     }
 }
 void init() {
-    int l;
+    int l = 0;
+    lim = 1;
     while (lim <= n + m) lim <<= 1, l++;
     rep(i, 0, lim - 1) rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (l - 1));
 }
@@ -367,3 +368,32 @@ ll gcd(ll a, ll b) {
 }
 ll lcd(ll a, ll b) { return a * b / gcd(a, b); }
 ```
+
+# 杂
+
+## 求逆序对
+
+用归并排序即可，树状数组/线段树也可以做
+
+```cpp
+// C++ Version
+int ans = 0 // 逆序对数量
+void merge(int ll, int rr) {
+  if (rr - ll <= 1) return;
+  int mid = ll + (rr - ll >> 1);
+  merge(ll, mid);
+  merge(mid, rr);
+  int p = ll, q = mid, s = ll;
+  while (s < rr) {
+    if (p >= mid || (q < rr && a[p] > a[q])) {
+      t[s++] = a[q++];
+      ans += mid - p;
+    } else {
+      t[s++] = a[p++];
+    }
+  }
+  for (int i = ll; i < rr; ++i) a[i] = t[i];
+}
+```
+
+
