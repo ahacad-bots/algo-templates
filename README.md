@@ -281,56 +281,59 @@ int qmax(int x, int y) {
 ## 快速傅里叶变换 (FFT)
 
 ```cpp
+const int MAXN = 1e7 + 10;
 const double Pi = acos(-1.0);
-const int maxn = 1e7 + 10;
-int rev[maxn];
-int limit = 1;
-int l, r[maxn];
-struct comp {
+struct Complex {
     double x, y;
-    comp(double _x = 0, double _y = 0) { x = _x, y = _y; }
-} a[maxn], b[maxn];
-comp operator+(comp a, comp b) { return comp(a.x + b.x, a.y + b.y); }
-comp operator-(comp a, comp b) { return comp(a.x - b.x, a.y - b.y); }
-comp operator*(comp a, comp b) {
-    return comp(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
-}
-
-void fft(comp *A, int type) {
-    for (int i = 0; i < limit; i++)
-        if (i < r[i]) swap(A[i], A[r[i]]);     //求出要迭代的序列
-    for (int mid = 1; mid < limit; mid <<= 1)  //待合并区间的中点
-    {
-        comp Wn(cos(Pi / mid), type * sin(Pi / mid));  //单位根
-        for (int R = mid << 1, j = 0; j < limit;
-             j += R)  // R是区间的右端点，j表示前已经到哪个位置了
-        {
-            comp w(1, 0);                              //幂
-            for (int k = 0; k < mid; k++, w = w * Wn)  //枚举左半部分
-            {
-                comp x = A[j + k], y = w * A[j + mid + k];  //蝴蝶效应
+    Complex(int _x, int _y) { x = _x, y = _y; }
+    Complex(double _x = 0, double _y = 0) { x = _x, y = _y; }
+    friend Complex operator+(const Complex &a, const Complex &b) {
+        return ((Complex){a.x + b.x, a.y + b.y});
+    }
+    friend Complex operator-(const Complex &a, const Complex &b) {
+        return ((Complex){a.x - b.x, a.y - b.y});
+    }
+    friend Complex operator*(const Complex &a, const Complex &b) {
+        return ((Complex){a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x});
+    }
+    friend Complex operator*(const Complex &a, const double &val) {
+        return ((Complex){a.x * val, a.y * val});
+    }
+} f[MAXN], g[MAXN], p[MAXN];
+int n, m, lim = 1, maxn, rev[MAXN], a[MAXN], b[MAXN];
+inl void FFT(Complex *A, int opt) {
+    for (int i = 0; i < lim; i++)
+        if (i < rev[i]) swap(A[i], A[rev[i]]);
+    for (int mid = 1; mid < lim; mid <<= 1) {
+        Complex Wn = ((Complex){cos(Pi / (double)mid),
+                                (double)opt * sin(Pi / (double)mid)});
+        for (int j = 0; j < lim; j += (mid << 1)) {
+            Complex W = ((Complex){1, 0});
+            for (int k = 0; k < mid; k++, W = W * Wn) {
+                Complex x = A[j + k], y = W * A[j + k + mid];
                 A[j + k] = x + y;
-                A[j + mid + k] = x - y;
+                A[j + k + mid] = x - y;
             }
         }
     }
 }
 void init() {
-    rep(i, 0, n) cin >> a[i].x;
-    rep(i, 0, m) cin >> b[i].x;
-    while (limit <= n + m) limit <<= 1, l++;
-    rep(i, 0, limit - 1) r[i] = (r[i >> 1] >> 1) | ((i & 1) << (l - 1));
+    int l;
+    while (lim <= n + m) lim <<= 1, l++;
+    rep(i, 0, lim - 1) rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (l - 1));
 }
 
 int main() {
-    ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
     cin >> n >> m;
+    rep(i, 0, n) cin >> f[i].x;
+    rep(i, 0, m) cin >> g[i].x;
     init();
-    fft(a, 1);
-    fft(b, 1);
-    rep(i, 0, limit) a[i] = a[i] * b[i];
-    fft(a, -1);
-    rep(i, 0, n + m) { cout << (int)(a[i].x / limit + 0.5) << " "; }
+    FFT(f, 1);
+    FFT(g, 1);
+    rep(i, 0, lim) f[i] = f[i] * g[i];
+    FFT(f, -1);
+    rep(i, 0, n + m) { cout << (int)(f[i].x / lim + 0.5) << " "; }
+
     return 0;
 }
 ```
