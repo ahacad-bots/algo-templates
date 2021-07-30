@@ -2,6 +2,16 @@
 
 # 常用头部处理
 
+
+## defines
+ 
+```cpp
+#define rep(i, x, y) for (auto i = (x); i <= (y); i++)
+#define dep(i, x, y) for (auto i = (x); i >= (y); i--)
+
+typedef long long ll;
+```
+
 ## 快速输入输出
 
 ```cpp
@@ -29,44 +39,6 @@ inline void write(T x) {
     } while (x);
     while (top) putchar(sta[--top] + '0');
 }
-```
-
-## defines
- 
-```cpp
-#define rep(i, x, y) for (auto i = (x); i <= (y); i++)
-#define dep(i, x, y) for (auto i = (x); i >= (y); i--)
-
-typedef long long ll;
-```
-
-# 
-
-## 快速幂
-
-```cpp
-ll pow(ll base, ll power, ll p) {
-    ll result = 1;
-    while (power > 0) {
-        if (power & 1) {
-            result = result * base % p;
-        }
-        power >>= 1;
-        base = (base * base) % p;
-    }
-    return result;
-}
-```
-
-## gcdlcd
-
-```cpp
-ll gcd(ll a, ll b) {
-    while (b ^= a ^= b ^= a %= b)
-        ;
-    return a;
-}
-ll lcd(ll a, ll b) { return a * b / gcd(a, b); }
 ```
 
 # 树
@@ -304,3 +276,88 @@ int qmax(int x, int y) {
 ## 匈牙利算法（二分图最大匹配）
 
 
+# 数学
+
+## 快速傅里叶变换 (FFT)
+
+```cpp
+const double Pi = acos(-1.0);
+const int maxn = 1e7 + 10;
+int rev[maxn];
+int limit = 1;
+int l, r[maxn];
+struct comp {
+    double x, y;
+    comp(double _x = 0, double _y = 0) { x = _x, y = _y; }
+} a[maxn], b[maxn];
+comp operator+(comp a, comp b) { return comp(a.x + b.x, a.y + b.y); }
+comp operator-(comp a, comp b) { return comp(a.x - b.x, a.y - b.y); }
+comp operator*(comp a, comp b) {
+    return comp(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+}
+
+void fft(comp *A, int type) {
+    for (int i = 0; i < limit; i++)
+        if (i < r[i]) swap(A[i], A[r[i]]);     //求出要迭代的序列
+    for (int mid = 1; mid < limit; mid <<= 1)  //待合并区间的中点
+    {
+        comp Wn(cos(Pi / mid), type * sin(Pi / mid));  //单位根
+        for (int R = mid << 1, j = 0; j < limit;
+             j += R)  // R是区间的右端点，j表示前已经到哪个位置了
+        {
+            comp w(1, 0);                              //幂
+            for (int k = 0; k < mid; k++, w = w * Wn)  //枚举左半部分
+            {
+                comp x = A[j + k], y = w * A[j + mid + k];  //蝴蝶效应
+                A[j + k] = x + y;
+                A[j + mid + k] = x - y;
+            }
+        }
+    }
+}
+void init() {
+    rep(i, 0, n) cin >> a[i].x;
+    rep(i, 0, m) cin >> b[i].x;
+    while (limit <= n + m) limit <<= 1, l++;
+    rep(i, 0, limit - 1) r[i] = (r[i >> 1] >> 1) | ((i & 1) << (l - 1));
+}
+
+int main() {
+    ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+    cin >> n >> m;
+    init();
+    fft(a, 1);
+    fft(b, 1);
+    rep(i, 0, limit) a[i] = a[i] * b[i];
+    fft(a, -1);
+    rep(i, 0, n + m) { cout << (int)(a[i].x / limit + 0.5) << " "; }
+    return 0;
+}
+```
+
+## 快速幂
+
+```cpp
+ll pow(ll base, ll power, ll p) {
+    ll result = 1;
+    while (power > 0) {
+        if (power & 1) {
+            result = result * base % p;
+        }
+        power >>= 1;
+        base = (base * base) % p;
+    }
+    return result;
+}
+```
+
+## gcdlcd
+
+```cpp
+ll gcd(ll a, ll b) {
+    while (b ^= a ^= b ^= a %= b)
+        ;
+    return a;
+}
+ll lcd(ll a, ll b) { return a * b / gcd(a, b); }
+```
