@@ -342,6 +342,28 @@ int main() {
 }
 ```
 
+## BSGS
+
+```cpp
+long long bsgs(long long a, long long b, long long p) {  // bsgs
+    map<long long, long long> hash;
+    hash.clear();  //建立一个Hash表
+    b %= p;
+    long long t = sqrt(p) + 1;
+    for (long long i = 0; i < t; ++i)
+        hash[(long long)b * power(a, i, p) % p] =
+            i;  //将每个j对应的值插入Hash表
+    a = power(a, t, p);
+    if (!a) return b == 0 ? 1 : -1;  //特判
+    for (long long i = 1; i <= t; ++i) {  //在Hash表中查找是否有i对应的j值
+        long long val = power(a, i, p);
+        int j = hash.find(val) == hash.end() ? -1 : hash[val];
+        if (j >= 0 && i * t - j >= 0) return i * t - j;
+    }
+    return -1;  //无解返回-1
+}
+```
+
 ## 快速幂
 
 ```cpp
