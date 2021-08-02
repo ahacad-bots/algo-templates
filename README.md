@@ -271,12 +271,56 @@ int qmax(int x, int y) {
 ```
 
 # 图
+ 
+## 最短路 (TODO)
 
-## 匈牙利算法（二分图最大匹配）
+### Dijkstra
+
+```cpp
+struct node {
+    int to, next, w;
+};
+int head[MAXN];
+node edge[MAXN];
+int cnt;
+void add(int x, int y, int w) {
+    edge[++cnt].to = y;
+    edge[cnt].next = head[x];
+    edge[cnt].w = w;
+    head[x] = cnt;
+}
+
+int d[MAXN];
+bool vis[MAXN];
+void dij(int s) {
+    memset(d, 0x3f, sizeof(d));
+    memset(vis, 0, sizeof(vis));
+    d[s] = 0;
+    priority_queue<pair<int, int> > q;
+    q.push(make_pair(0, s));
+    while (!q.empty()) {
+        int u = q.top().second;
+        q.pop();
+        if (vis[u]) continue;
+        vis[u] = 1;
+        for (int i = head[u]; i; i = edge[i].next) {
+            int to = edge[i].to, w = edge[i].w;
+            if (d[to] > d[u] + w)
+                d[to] = d[u] + w, q.push(make_pair(-d[to], to));
+        }
+    }
+}
+```
+
+## 最小生成树 (TODO)
+
+## 匈牙利算法（二分图最大匹配） (TODO)
 
 ```cpp
 
 ```
+
+## 网络流 (TODO)
 
 
 # 数学
@@ -389,7 +433,11 @@ ll gcd(ll a, ll b) {
     return a;
 }
 ll lcd(ll a, ll b) { return a * b / gcd(a, b); }
-```
+``` 
+
+## 高斯消元 (TODO)
+
+
 
 # 杂
 
