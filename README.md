@@ -386,6 +386,8 @@ int main() {
 }
 ```
 
+TODO: 快速傅立叶变换求 string 匹配
+
 ## BSGS
 
 ```cpp
