@@ -482,6 +482,8 @@ ll x = power(a, b - 2, mod);
 
 ## ST 表
 
+$\Theta(nlogn)$ 预处理，$\Theta(1)$ 查询，不支持修改。
+
 ```cpp
 const int logn = 21;
 const int maxn = 2000001;
