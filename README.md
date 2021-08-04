@@ -131,7 +131,38 @@ struct bit {
 };
 ```
 
+## 求树的直径
 
+两次 dfs 方法求直径
+
+```cpp
+const int N = 10000 + 10;
+
+int n, c, d[N];
+vector<int> E[N];
+
+void dfs(int u, int fa) {
+  for (int v : E[u]) {
+    if (v == fa) continue;
+    d[v] = d[u] + 1;
+    if (d[v] > d[c]) c = v;
+    dfs(v, u);
+  }
+}
+
+int main() {
+  scanf("%d", &n);
+  for (int i = 1; i < n; i++) {
+    int u, v;
+    scanf("%d %d", &u, &v);
+    E[u].push_back(v), E[v].push_back(u);
+  }
+  dfs(1, 0);
+  d[c] = 0, dfs(c, 0);
+  printf("%d\n", d[c]);
+  return 0;
+}
+```
 
 ## 树链剖分
 
@@ -437,8 +468,46 @@ ll gcd(ll a, ll b) {
 ll lcd(ll a, ll b) { return a * b / gcd(a, b); }
 ``` 
 
+## 乘法逆元
+
+利用 Fermat 小定理用快速幂算逆元
+
+```cpp
+ll x = power(a, b - 2, mod);
+```
+
 ## 高斯消元 (TODO)
 
+# 数据结构
+
+## ST 表
+
+```cpp
+const int logn = 21;
+const int maxn = 2000001;
+int f[maxn][logn + 1], Logn[maxn + 1]; // f[i][j]: [i, i + 2^j - 1] 中最大值
+void pre() {
+  Logn[1] = 0;
+  Logn[2] = 1;
+  for (int i = 3; i < maxn; i++) {
+    Logn[i] = Logn[i / 2] + 1;
+  }
+}
+int main() {
+  int n = read(), m = read();
+  for (int i = 1; i <= n; i++) f[i][0] = read();
+  pre();
+  for (int j = 1; j <= logn; j++)
+    for (int i = 1; i + (1 << j) - 1 <= n; i++)
+      f[i][j] = max(f[i][j - 1], f[i + (1 << (j - 1))][j - 1]);
+  for (int i = 1; i <= m; i++) {
+    int x = read(), y = read();
+    int s = Logn[y - x + 1];
+    printf("%d\n", max(f[x][s], f[y - (1 << s) + 1][s]));
+  }
+  return 0;
+}
+```
 
 
 # 杂
