@@ -571,6 +571,34 @@ ll x = power(a, b - 2, mod);
 
 ## 高斯消元 (TODO)
 
+## 欧拉回路
+
+奇数个点完全图递推求欧拉回路。
+
+```cpp
+void dfs(int x, int y) {
+    int cnt = 2;
+    edges.push_back({1, x});
+    while (cnt < x) {
+        edges.push_back({x, cnt});
+        edges.push_back({cnt, y});
+
+        cnt++;
+        edges.push_back({y, cnt});
+        edges.push_back({cnt, x});
+
+        cnt++;
+    }
+    edges.push_back({x, y});
+    edges.push_back({y, 1});
+}
+
+for (int i = 1; i < n; i += 2) {
+    dfs(i + 1, i + 2);
+}
+
+```
+
 # 数据结构
 
 ## ST 表
