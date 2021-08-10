@@ -759,3 +759,14 @@ int main() {
 - `int __builtin_ctz (unsigned int x)`: 返回后面的0个个数，和__builtin_clz相对。
 - `int __builtin_popcount (unsigned int x)`: 返回二进制表示中1的个数。
 - `int __builtin_parity (unsigned int x)`: 返回x的奇偶校验位，也就是x的1的个数模2的
+
+# 注意！
+
+> 十年OI一场空，不开long long见祖宗
+
+一下常见错误：
+
+- 没用 long long 或者 double 数据溢出
+- mod 过程中数据溢出、没有用逆元计算
+- 题意读错，漏掉细节，看清楚到底要求什么、题目的一些细小限制
+
