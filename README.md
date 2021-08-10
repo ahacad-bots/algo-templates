@@ -512,6 +512,56 @@ int main() {
 
 TODO: 快速傅立叶变换求 string 匹配
 
+## 筛法
+
+### 埃氏筛
+
+复杂度 $O(n loglogn)$
+
+```cpp
+int Eratosthenes(int n) {
+  int p = 0;
+  for (int i = 0; i <= n; ++i) is_prime[i] = 1;
+  is_prime[0] = is_prime[1] = 0;
+  for (int i = 2; i * i <= n; ++i) {
+    if (is_prime[i]) {
+      prime[p++] = i;  // prime[p]是i,后置自增运算代表当前素数数量
+      if ((long long)i * i <= n)
+        for (int j = i * i; j <= n; j += i)
+          // 因为从 2 到 i - 1 的倍数我们之前筛过了，这里直接从 i
+          // 的倍数开始，提高了运行速度
+          is_prime[j] = 0;  // 是i的倍数的均不是素数
+    }
+  }
+  return p;
+}
+```
+
+### Euler 筛
+
+线性时间复杂度，因子筛不重复
+
+```cpp
+const int MAXN = 1e8 + 10;
+int prime[MAXN];  //保存素数，注意下面的实现 prime 从 0 开始
+bool vis[MAXN];   //初始化
+int Prime(int n) {
+    int cnt = 0;
+    memset(vis, 0, sizeof(vis));
+    for (int i = 2; i < n; i++) {
+        if (!vis[i]) prime[cnt++] = i;
+        for (int j = 0; j < cnt && i * prime[j] < n; j++) {
+            vis[i * prime[j]] = 1;
+            if (i % prime[j] == 0)  //关键
+                break;
+        }
+    }
+    return cnt;  //返回小于n的素数的个数
+}
+```
+
+
+
 ## BSGS
 
 ```cpp
