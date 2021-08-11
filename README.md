@@ -2,6 +2,34 @@
 
 # 常用头部处理
 
+## 直接上 Template
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, x, y) for (auto i = (x); i <= (y); i++)
+#define dep(i, x, y) for (auto i = (x); i >= (y); i--)
+#define ____ puts("\n_______________\n") 
+#define debug(x) ____; cout<< #x << " => " << (x) << endl
+
+typedef long long ll;
+
+void init() {
+    //
+}
+void solve() {
+    //
+}
+void clear() {
+    //
+}
+
+int main() {
+    ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+}
+```
+
 
 ## defines
  
