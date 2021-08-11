@@ -12,6 +12,13 @@
 typedef long long ll;
 ```
 
+## Debug 专用
+
+```cpp
+#define ____ puts("\n_______________\n") 
+#define debug(x) ____; cout<< #x << " => " << (x) << endl
+```
+
 ## 快速输入输出
 
 ```cpp
@@ -682,6 +689,62 @@ void solve() {
 		euler.push_back(n-1);
 	}
 }
+```
+
+## 矩阵 (FIXME)
+
+```cpp
+struct Matrix{ 
+    static const int N=511,P=998244353;
+    int n,a[N][2*N]; bool t;
+    
+    void In(ll a[][::N],int n) {
+        this->n=n;
+        rep(i,1,n+1) rep(j,1,n+1) this->a[i][j]=a[i][j], this->a[i][n+j]=0;
+        rep(i,1,n+1) this->a[i][i+n]=1;
+    }
+    
+    void Out(ll b[][::N]) {
+        rep(i,1,n+1) rep(j,1,n+1) b[i][j]=a[i][n+j];
+    }
+    
+    void Print() {
+        if (t) printf("Inv Is:\n"); else { printf("Not Invertable!\n"); return; }
+        rep(i,1,n+1) rep(j,1,n+1) printf("%d%c",a[i][n+j]," \n"[j==n]);
+    }
+    
+    bool getinv(){
+        rep(i,1,n+1){
+            if(a[i][i]==0){
+                rep(j,i,n+1) if(a[j][i]) swap(a[i],a[j]);
+                if(!a[i][i]) return 0;
+            }
+            int s=a[i][i];
+            rep(j,1,n+n+1) a[i][j]=1ll*a[i][j]*Pow(s,P-2)%P;
+            rep(j,1,n+1) {
+                if(i==j) continue;
+                s=1ll*a[j][i]*Pow(a[i][i],P-2)%P;
+                rep(k,1,n+n+1) a[j][k]=(a[j][k]-1ll*a[i][k]*s)%P;
+            }
+        }
+        rep(i,1,n+1) rep(j,1,n+n+1) a[i][n+j]=(a[i][n+j]+P)%P;
+        return 1;
+    }
+    
+    bool Solve(ll a[][::N],int n,ll b[][::N]) {
+        In(a,n),t=getinv(),Out(b); return t;
+    }
+    
+    bool Check(ll a[][::N],ll b[][::N],int n) {
+        static int c[::N][::N];
+        memset(c,0,sizeof(c));
+        rep(i,1,n+1) rep(k,1,n+1) if (a[i][k]) 
+            rep(j,1,n+1) if (b[k][j]) c[i][j]+=a[i][k]*b[k][j]%P,c[i][j]%=P;
+        rep(i,1,n+1) rep(j,1,n+1) c[i][j]=(c[i][j]+P)%P;
+        rep(i,1,n+1) rep(j,1,n+1) if (c[i][j]!=(i==j)) return 0;
+        return 1;
+    }
+}; 
 ```
 
 # 数据结构
