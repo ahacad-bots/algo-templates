@@ -667,6 +667,23 @@ for (int i = 1; i < n; i += 2) {
 
 ```
 
+另一种 nb 的构造方法，旋转构造欧拉回路
+
+```cpp
+void solve() {
+	vector<int> euler(1, n-1);
+	for(int i = 0; i < n/2; ++i) {
+		int sgn = 1, ct = i;
+		for(int d = 1; d < n; ++d) {
+			euler.push_back(ct);
+			ct = (ct + sgn*d + n-1) % (n-1);
+			sgn *= -1;
+		}
+		euler.push_back(n-1);
+	}
+}
+```
+
 # 数据结构
 
 ## ST 表
