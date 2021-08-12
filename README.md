@@ -592,19 +592,20 @@ int Eratosthenes(int n) {
 
 ### Euler 筛
 
-线性时间复杂度，因子筛不重复
+线性时间复杂度，因子筛不重复。欧拉筛可以顺便求出每个数字的因子个数。
 
 ```cpp
 const int MAXN = 1e8 + 10;
+int divisions[MAXN] // euler 筛还可以顺便算出每个数字的因子个数
 int prime[MAXN];  //保存素数，注意下面的实现 prime 从 0 开始
 bool vis[MAXN];   //初始化
 int Prime(int n) {
     int cnt = 0;
     memset(vis, 0, sizeof(vis));
     for (int i = 2; i < n; i++) {
-        if (!vis[i]) prime[cnt++] = i;
+        if (!vis[i]) prime[cnt++] = i, divisions[i] = 1;
         for (int j = 0; j < cnt && i * prime[j] < n; j++) {
-            vis[i * prime[j]] = 1;
+            vis[i * prime[j]] = 1, divisions[i * prime[j]] = divisions[i] + 1;
             if (i % prime[j] == 0)  //关键
                 break;
         }
