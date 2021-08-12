@@ -408,6 +408,36 @@ void dij(int s) {
 
 # 字符串
 
+## 字符串哈希
+
+按进制哈希
+
+```cpp
+ull base = 131;
+int prime = 233317;
+ull mod=212370440130137957ll;
+ull hashe(char s[]) {
+    int len = strlen(s);
+    ull ans = 0;
+    for (int i = 0; i < len; i++) ans = (ans * base + (ull)s[i]) % mod + prime;
+    return ans;
+}
+```
+
+
+BKDRHash
+
+```cpp
+unsigned int BKDRHash(char* str) {
+    unsigned int seed = 131;  // 31 131 1313 13131 131313 etc..
+    unsigned int hash = 0;
+    while (*str) {
+        hash = hash * seed + (*str++);
+    }
+    return (hash % mod);
+}
+```
+
 ## Trie 树
 
 ### 基本字符串查找
