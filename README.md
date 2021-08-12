@@ -460,10 +460,10 @@ struct trie {
     int p = 0;
     for (int i = 0; i < l; i++) {
       int c = s[i] - 'a';
-      if (!nex[p][c]) return 0;
+      if (!nex[p][c]) return false;
       p = nex[p][c];
     }
-    return exist[p];
+    return true;
   }
 };
 ```
