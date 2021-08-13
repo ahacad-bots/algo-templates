@@ -14,6 +14,7 @@ using namespace std;
 #define debug(x) ____; cout<< #x << " => " << (x) << endl
 
 typedef long long ll;
+typedef unsigned long long ull;
 
 void init() {
     //
@@ -435,6 +436,165 @@ unsigned int BKDRHash(char* str) {
         hash = hash * seed + (*str++);
     }
     return (hash % mod);
+}
+```
+
+## AC 自动机
+
+统计每个子串出现次数
+
+```cpp
+// AC自动机加强版
+#include <bits/stdc++.h>
+#define maxn 1000001
+using namespace std;
+char s[151][maxn], T[maxn];
+int n, cnt, vis[maxn], ans;
+struct kkk {
+    int son[26], fail, flag;
+    void clear() {
+        memset(son, 0, sizeof(son));
+        fail = flag = 0;
+    }
+} trie[maxn];
+void insert(char* s, int num) {
+    int u = 1, len = strlen(s);
+    for (int i = 0; i < len; i++) {
+        int v = s[i] - 'a';
+        if (!trie[u].son[v]) trie[u].son[v] = ++cnt;
+        u = trie[u].son[v];
+    }
+    trie[u].flag = num;  //变化1：标记为第num个出现的字符串
+}
+queue<int> q;
+void getFail() {
+    for (int i = 0; i < 26; i++) trie[0].son[i] = 1;
+    q.push(1);
+    trie[1].fail = 0;
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        int Fail = trie[u].fail;
+        for (int i = 0; i < 26; i++) {
+            int v = trie[u].son[i];
+            if (!v) {
+                trie[u].son[i] = trie[Fail].son[i];
+                continue;
+            }
+            trie[v].fail = trie[Fail].son[i];
+            q.push(v);
+        }
+    }
+}
+void query(char* s) {
+    int u = 1, len = strlen(s);
+    for (int i = 0; i < len; i++) {
+        int v = s[i] - 'a';
+        int k = trie[u].son[v];
+        while (k > 1) {
+            if (trie[k].flag)
+                vis[trie[k].flag]++;  //如果有模式串标记，更新出现次数
+            k = trie[k].fail;
+        }
+        u = trie[u].son[v];
+    }
+}
+void clear() {
+    for (int i = 0; i <= cnt; i++) trie[i].clear();
+    for (int i = 1; i <= n; i++) vis[i] = 0;
+    cnt = 1;
+    ans = 0;
+}
+int main() {
+    while (1) {
+        scanf("%d", &n);
+        if (!n) break;
+        clear();
+        for (int i = 1; i <= n; i++) {
+            scanf("%s", s[i]);
+            insert(s[i], i);
+        }
+        scanf("%s", T);
+        getFail();
+        query(T);
+        for (int i = 1; i <= n; i++) ans = max(vis[i], ans);  //最后统计答案
+        printf("%d\n", ans);
+        for (int i = 1; i <= n; i++)
+            if (vis[i] == ans) printf("%s\n", s[i]);
+    }
+}
+```
+
+AC 自动机 topu 优化
+
+```cpp
+#include <bits/stdc++.h>
+#define maxn 2000001
+using namespace std;
+char s[maxn], T[maxn];
+int n, cnt, vis[200051], ans, in[maxn], Map[maxn];
+struct kkk {
+    int son[26], fail, flag, ans;
+} trie[maxn];
+queue<int> q;
+void insert(char* s, int num) {
+    int u = 1, len = strlen(s);
+    for (int i = 0; i < len; ++i) {
+        int v = s[i] - 'a';
+        if (!trie[u].son[v]) trie[u].son[v] = ++cnt;
+        u = trie[u].son[v];
+    }
+    if (!trie[u].flag) trie[u].flag = num;
+    Map[num] = trie[u].flag;
+}
+void getFail() {
+    for (int i = 0; i < 26; i++) trie[0].son[i] = 1;
+    q.push(1);
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        int Fail = trie[u].fail;
+        for (int i = 0; i < 26; ++i) {
+            int v = trie[u].son[i];
+            if (!v) {
+                trie[u].son[i] = trie[Fail].son[i];
+                continue;
+            }
+            trie[v].fail = trie[Fail].son[i];
+            in[trie[v].fail]++;
+            q.push(v);
+        }
+    }
+}
+void topu() {
+    for (int i = 1; i <= cnt; ++i)
+        if (in[i] == 0) q.push(i);  //将入度为0的点全部压入队列里
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        vis[trie[u].flag] = trie[u].ans;  //如果有flag标记就更新vis数组
+        int v = trie[u].fail;
+        in[v]--;  //将唯一连出去的出边fail的入度减去（拓扑排序的操作）
+        trie[v].ans += trie[u].ans;  //更新fail的ans值
+        if (in[v] == 0) q.push(v);   //拓扑排序常规操作
+    }
+}
+void query(char* s) {
+    int u = 1, len = strlen(s);
+    for (int i = 0; i < len; ++i) u = trie[u].son[s[i] - 'a'], trie[u].ans++;
+}
+int main() {
+    scanf("%d", &n);
+    cnt = 1;
+    for (int i = 1; i <= n; ++i) {
+        scanf("%s", s);
+        insert(s, i);
+    }
+    getFail();
+    scanf("%s", T);
+    query(T);
+    topu();
+    for (int i = 1; i <= n; ++i) printf("%d\n", vis[Map[i]]);
 }
 ```
 
