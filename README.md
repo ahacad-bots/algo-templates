@@ -15,6 +15,7 @@ using namespace std;
 
 typedef long long ll;
 typedef unsigned long long ull;
+typedef pair<int, int> pii;
 
 void init() {
     //
@@ -199,6 +200,10 @@ int main() {
   return 0;
 }
 ```
+
+## 最小生成树
+
+
 
 ## 树链剖分
 
@@ -398,6 +403,287 @@ void dij(int s) {
 ```
 
 ## 最小生成树 (TODO)
+
+### Prim
+
+堆优化复杂度 $O(nlogn + m)$
+
+```cpp
+int k, n, m, cnt, sum, ai, bi, ci, head[5005], dis[5005], vis[5005];
+struct Edge {
+    int v, w, next;
+} e[400005];
+void add(int u, int v, int w) {
+    e[++k].v = v;
+    e[k].w = w;
+    e[k].next = head[u];
+    head[u] = k;
+}
+priority_queue<pii, vector<pii>, greater<pii> > q;
+void prim() {
+    dis[1] = 0;
+    q.push(make_pair(0, 1));
+    while (!q.empty() && cnt < n) {
+        int d = q.top().first, u = q.top().second;
+        q.pop();
+        if (vis[u]) continue;
+        cnt++;
+        sum += d;
+        vis[u] = 1;
+        for (int i = head[u]; i != -1; i = e[i].next)
+            if (e[i].w < dis[e[i].v])
+                dis[e[i].v] = e[i].w, q.push(make_pair(dis[e[i].v], e[i].v));
+    }
+}
+
+int main() {
+    memset(dis, 127, sizeof(dis));
+    memset(head, -1, sizeof(head));
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= m; i++) {
+        scanf("%d%d%d", &ai, &bi, &ci);
+        add(ai, bi, ci);
+        add(bi, ai, ci);
+    }
+    prim();
+    if (cnt == n)
+        printf("%d", sum);
+    else
+        printf("orz");
+}
+```
+
+### Kruskal
+
+堆优化复杂度 $O(mlogm)$
+
+```cpp
+struct node {
+    int u;
+    int v;
+    int w;
+} e[maxn];
+int fa[maxn], cnt, sum, num;
+void add(int x, int y, int w) {
+    e[++cnt].u = x;
+    e[cnt].v = y;
+    e[cnt].w = w;
+}
+bool cmp(node x, node y) { return x.w < y.w; }
+int find(int x) {
+    return fa[x] == x ? fa[x] : fa[x] = find(fa[x]);  //路径压缩
+}
+void kruskal() {
+    for (int i = 1; i <= cnt; i++) {
+        int x = find(e[i].u);
+        int y = find(e[i].v);
+        if (x == y) continue;
+        fa[x] = y;
+        sum += e[i].w;
+        if (++num == n - 1) break;  //如果构成了一颗树
+    }
+}
+
+int main() {
+    n = read();
+    m = read();
+    for (int i = 1; i <= n; i++) fa[i] = i;
+    while (m--) {
+        int x, y, w;
+        x = read();
+        y = read();
+        w = read();
+        add(x, y, w);
+    }
+    std::sort(e + 1, e + 1 + cnt, cmp);
+    kruskal();
+    printf("%d", sum);
+    return 0;
+}
+```
+
+### Borůvka
+
+复杂度 $O(mlogn)$
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+using namespace std;
+
+const int MaxN = 5000 + 5, MaxM = 200000 + 5;
+
+int N, M;
+int U[MaxM], V[MaxM], W[MaxM];
+bool used[MaxM];
+int par[MaxN], Best[MaxN];
+
+void init() {
+    scanf("%d %d", &N, &M);
+    for (int i = 1; i <= M; ++i)
+        scanf("%d %d %d", &U[i], &V[i], &W[i]);
+}
+
+void init_dsu() {
+    for (int i = 1; i <= N; ++i)
+        par[i] = i;
+}
+
+int get_par(int x) {
+    if (x == par[x]) return x;
+    else return par[x] = get_par(par[x]);
+}
+
+inline bool Better(int x, int y) {
+    if (y == 0) return true;
+    if (W[x] != W[y]) return W[x] < W[y];
+    return x < y;
+}
+
+void Boruvka() {
+    init_dsu();
+
+    int merged = 0, sum = 0;
+
+    bool update = true;
+    while (update) {
+        update = false;
+        memset(Best, 0, sizeof Best);
+
+        for (int i = 1; i <= M; ++i) {
+            if (used[i] == true) continue;
+            int p = get_par(U[i]), q = get_par(V[i]);
+            if (p == q) continue;
+
+            if (Better(i, Best[p]) == true) Best[p] = i;
+            if (Better(i, Best[q]) == true) Best[q] = i;
+        }
+
+        for (int i = 1; i <= N; ++i)
+            if (Best[i] != 0 && used[Best[i]] == false) {
+                update = true;
+                merged++; sum += W[Best[i]];
+                used[Best[i]] = true;
+                par[get_par(U[Best[i]])] = get_par(V[Best[i]]);
+            }
+    }
+
+    if (merged == N - 1) printf("%d\n", sum);
+    else puts("orz");
+}
+
+int main() {
+    init();
+    Boruvka();
+    return 0;
+}
+```
+
+### Link-cut Tree
+
+用 Lint-cut tree [也可以做](https://www.luogu.com.cn/blog/Soulist/solution-p3366) orz
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int read() {
+    char cc = getchar();
+    int cn = 0, flus = 1;
+    while (cc < '0' || cc > '9') {
+        if (cc == '-') flus = -flus;
+        cc = getchar();
+    }
+    while (cc >= '0' && cc <= '9') cn = cn * 10 + cc - '0', cc = getchar();
+    return cn * flus;
+}
+const int N = 2e5 + 5005;
+#define ls(x) t[x].son[0]
+#define rs(x) t[x].son[1]
+struct LCT {
+    int son[2], mx, id, fa;
+    bool mark;
+} t[N];
+int w[N], n, m, Idnet, ans;
+void pushup(int x) {  //每次下传都需要更新最大点权，
+    t[x].id = x, t[x].mx = w[x];
+    if (t[ls(x)].mx > t[x].mx) t[x].mx = t[ls(x)].mx, t[x].id = t[ls(x)].id;
+    if (t[rs(x)].mx > t[x].mx) t[x].mx = t[rs(x)].mx, t[x].id = t[rs(x)].id;
+}
+bool isroot(int x) { return (rs(t[x].fa) != x) && (ls(t[x].fa) != x); }
+void pushmark(int x) {  //下传翻转标记
+    if (t[x].mark) {
+        t[x].mark = 0, t[ls(x)].mark ^= 1, t[rs(x)].mark ^= 1;
+        swap(ls(x), rs(x));
+    }
+}
+void rotate(int x) {  //旋转
+    int f = t[x].fa, ff = t[f].fa, qwq = (rs(f) == x);
+    t[x].fa = ff;
+    if (!isroot(f)) t[ff].son[(rs(ff) == f)] = x;  //如果父亲不为根才改爷爷
+    t[t[x].son[qwq ^ 1]].fa = f, t[f].son[qwq] = t[x].son[qwq ^ 1], t[f].fa = x,
+                     t[x].son[qwq ^ 1] = f;
+    pushup(f), pushup(x);
+}
+int st[N];
+void Splay(int x) {
+    int top = 0, now = x;
+    st[++top] = now;
+    while (!isroot(now)) st[++top] = (now = t[now].fa);
+    while (top) pushmark(st[top--]);
+    while (!isroot(x)) {
+        int f = t[x].fa, ff = t[f].fa;
+        if (!isroot(f)) ((rs(ff) == f) ^ (rs(f) == x)) ? rotate(x) : rotate(f);
+        rotate(x);
+    }
+}
+void access(int x) {
+    for (int y = 0; x; y = x, x = t[y].fa) Splay(x), t[x].son[1] = y, pushup(x);
+}
+void makeroot(int x) { access(x), Splay(x), t[x].mark ^= 1, pushmark(x); }
+int findroot(int x) {
+    access(x), Splay(x), pushmark(x);
+    while (ls(x)) pushmark(x = ls(x));
+    return x;
+}
+void split(int x, int y) { makeroot(x), access(y), Splay(y); }
+bool check(int x, int y) {  //判断两个点是否联通
+    makeroot(x);
+    return findroot(y) != x;
+}
+void link(int x, int y) {  // link的前提是这两个点联通，所以没有判断
+    makeroot(x);
+    t[x].fa = y;
+}
+signed main() {
+    n = read(), m = read();
+    Idnet = n;  // Idnet表示当前边
+
+    int x, y, z, now;
+
+    for (int i = 1; i <= m; ++i) {
+        x = read(), y = read(), z = read();
+
+        ++Idnet,
+            w[Idnet] = z;  //表示编号为Idnet的边（也是LCT中的树点）的点权变成z
+
+        if (check(x, y))
+            link(x, Idnet), link(Idnet, y),
+                ans += z;  //如果两个不在同一个联通快里面，直接连边，并更新答案
+        else {
+            split(x, y),  //把x-y的路径先拉出来
+                now = t[y].id;
+            if (t[now].mx <= z) continue;
+            ans += (z - t[now].mx), Splay(t[y].id);  //先把这个点旋上去
+            t[ls(now)].fa = t[rs(now)].fa = 0;  //子不认父，就是断边
+            link(x, Idnet), link(Idnet, y);     //再连边
+        }
+    }
+    printf("%d\n", ans);
+    return 0;
+}
+```
+
 
 ## 匈牙利算法（二分图最大匹配） (TODO)
 
