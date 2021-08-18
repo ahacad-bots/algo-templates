@@ -1222,7 +1222,6 @@ long long Lucas(long long n, long long m, long long p) {
 
 ## 中国剩余定理
 
-
 ```cpp
 LL CRT(int k, LL* a, LL* r) {
   LL n = 1, ans = 0;
@@ -1286,7 +1285,7 @@ int main() {
 
 ## 乘法逆元
 
-利用 Fermat 小定理用快速幂算逆元
+利用 Fermat 小定理用快速幂算逆元，注意要求 $p$ 必须是素数。
 
 ```cpp
 ll x = power(a, b - 2, mod);
