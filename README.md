@@ -1198,6 +1198,46 @@ ll power(ll base, ll power, ll p) {
 }
 ```
 
+## 龟速乘
+
+快速幂可能被毒瘤卡 long long，用龟速乘，牺牲速度换取正确性
+
+```cpp
+long long quick_mul(long long x,long long y,long long mod) 
+{
+	long long ans=0;
+	while(y!=0){
+		if(y&1==1)ans+=x,ans%=mod;
+		x=x+x,x%=mod;
+		y>>=1; 
+	}
+	return ans;
+}
+
+long long quick_pow(long long x,long long y,long long mod)
+{
+	long long sum=1;
+    while(y!=0){
+         if(y&1==1)sum=quick_mul(sum,x,mod),sum%=mod;
+    	     x=quick_mul(x,x,mod),x%=mod;
+         	 y=y>>1;
+    }
+    return sum;
+}
+```
+
+## 快速乘 (FIXME)
+
+09 集训队论文，速度 $O(1)$
+
+```cpp
+LL mul(LL a, LL b, LL P){
+    LL L = a * (b >> 25LL) % P * (1LL << 25) % P;
+    LL R = a * (b & ((1LL << 25) - 1)) % P;
+    return (L + R) % P;
+}
+```
+
 ## gcdlcd
 
 ```cpp
