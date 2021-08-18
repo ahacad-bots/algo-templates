@@ -1222,7 +1222,6 @@ long long Lucas(long long n, long long m, long long p) {
 
 ## 中国剩余定理
 
-一元线性同余方程组
 
 ```cpp
 LL CRT(int k, LL* a, LL* r) {
@@ -1234,6 +1233,54 @@ LL CRT(int k, LL* a, LL* r) {
     ans = (ans + a[i] * m * b % mod) % mod;
   }
   return (ans % mod + mod) % mod;
+}
+```
+
+## 康拖展开
+
+求一个排列在全排列字典序中第几个。公式 $\sum_{i=1}^n sum_{a_i} \times (n - i)!$，利用树状数组加速 $sum$ 计算，$sum$ 表示有多少个数比自己小。
+
+```cpp
+#include <cstdio>
+#include <iostream>
+using namespace std;
+typedef long long ll;
+int n;
+
+ll tree[1000005];  //树状数组
+int lowbit(int x) { return x & -x; }
+void update(int x, int y) {
+    while (x <= n) {
+        tree[x] += y;
+        x += lowbit(x);
+    }
+}
+ll query(int x) {
+    ll sum = 0;
+    while (x) {
+        sum += tree[x];
+        x -= lowbit(x);
+    }
+    return sum;
+}
+
+const ll wyx = 998244353;  //懒人专用
+ll jc[1000005] = {1, 1};   //存阶乘的数组
+int a[1000005];            //存数
+int main() {
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++) {  //预处理阶乘数组和树状数组
+        jc[i] = (jc[i - 1] * i) % wyx;
+        update(i, 1);
+    }
+    ll ans = 0;
+    for (int i = 1; i <= n; i++) {
+        scanf("%d", &a[i]);
+        ans = (ans + ((query(a[i]) - 1) * jc[n - i]) % wyx) % wyx;  //计算ans
+        update(a[i], -1);  //把a[i]变成0（原来是1，减1不就是0嘛）
+    }
+    printf("%lld", ans + 1);
+    return 0;
 }
 ```
 
