@@ -407,6 +407,8 @@ int qmax(int x, int y) {
 }
 ```
 
+## 最近公共祖先 (LCA)
+
 # 图
  
 ## 最短路 (TODO)
@@ -550,14 +552,14 @@ void kruskal() {
 }
 
 int main() {
-    n = read();
-    m = read();
+    n = read<int>();
+    m = read<int>();
     for (int i = 1; i <= n; i++) fa[i] = i;
     while (m--) {
         int x, y, w;
-        x = read();
-        y = read();
-        w = read();
+        x = read<int>();
+        y = read<int>();
+        w = read<int>();
         add(x, y, w);
     }
     std::sort(e + 1, e + 1 + cnt, cmp);
