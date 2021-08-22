@@ -751,9 +751,145 @@ signed main() {
 }
 ```
 
-## 次小生成树
+## （严格）次小生成树
 
+次小生成树与最小生成树差的只是一条边，枚举插入每条非树边，然后在环上删除最大边。
 
+```cpp
+#include <bits/stdc++.h>
+#define INF 2100000001
+#define M 300003
+#define N 100003
+#define LL long long
+using namespace std;
+
+int read() {
+    int f = 1, x = 0;
+    char s = getchar();
+    while (s < '0' || s > '9') {
+        if (s == '-') f = -1;
+        s = getchar();
+    }
+    while (s >= '0' && s <= '9') {
+        x = x * 10 + s - '0';
+        s = getchar();
+    }
+    return x * f;
+}
+struct EDGE {
+    int x, y, z, flagg;
+} w[M];
+struct edgee {
+    int to, nextt, val;
+} e[M];
+int tot = 0, m, n, minn = INF;
+LL ans = 0;
+int f[N][22], max1[N][22], g[N][22], fa[N], head[N], dep[N];
+bool cmp(const EDGE &a, const EDGE &b) { return a.z < b.z; }
+int getfa(int x) {
+    if (fa[x] == x) return x;
+    return fa[x] = getfa(fa[x]);
+}
+void add(int a, int b, int v) {
+    tot++;
+    e[tot].to = b;
+    e[tot].nextt = head[a];
+    e[tot].val = v;
+    head[a] = tot;
+}
+void kruscal() {
+    int q = 1;
+    sort(w + 1, w + m + 1, cmp);
+    for (int i = 1; i <= n; ++i) fa[i] = i;
+    for (int i = 1; i <= m; ++i) {
+        int s1 = getfa(w[i].x);
+        int s2 = getfa(w[i].y);
+        if (s1 != s2) {
+            ans += w[i].z;
+            w[i].flagg = 1;
+            q++;
+            fa[s1] = s2;
+            add(w[i].x, w[i].y, w[i].z);
+            add(w[i].y, w[i].x, w[i].z);
+        }
+        if (q == n) break;
+    }
+}
+void dfs(int x) {
+    for (int i = head[x]; i; i = e[i].nextt) {
+        int v = e[i].to;
+        if (v == f[x][0]) continue;
+        f[v][0] = x;
+        max1[v][0] = e[i].val;
+        dep[v] = dep[x] + 1;
+        for (int j = 1; j <= 20; ++j) {
+            if (dep[v] < (1 << j))
+                break;  //注意：如果深度小于向上走的步数就可以break掉了
+            f[v][j] = f[f[v][j - 1]][j - 1];  // f是向上走到达的点
+            max1[v][j] =
+                max(max1[v][j - 1], max1[f[v][j - 1]][j - 1]);  // max1是最大边
+            if (max1[v][j - 1] == max1[f[v][j - 1]][j - 1])
+                g[v][j] = max(g[v][j - 1], g[f[v][j - 1]][j - 1]);  // g是次大边
+            else {
+                g[v][j] = min(max1[v][j - 1], max1[f[v][j - 1]][j - 1]);
+                g[v][j] = max(g[v][j], g[f[v][j - 1]][j - 1]);
+                g[v][j] = max(g[v][j - 1], g[v][j]);
+            }
+        }
+        dfs(v);
+    }
+}
+int LCA(int u, int x) {
+    if (dep[u] < dep[x]) swap(u, x);
+    for (int i = 20; i >= 0; --i)
+        if (dep[f[u][i]] >= dep[x]) u = f[u][i];
+    if (x == u) return x;
+    for (int i = 20; i >= 0; --i)
+        if (f[x][i] != f[u][i]) x = f[x][i], u = f[u][i];
+    return f[x][0];
+}
+void change(int x, int lca, int val) {
+    int maxx1 = 0, maxx2 = 0;
+    int d = dep[x] - dep[lca];
+    for (int i = 0; i <= 20; ++i) {
+        if (d < (1 << i)) break;
+        if (d & (1 << i)) {
+            if (max1[x][i] > maxx1) {
+                maxx2 = max(maxx1, g[x][i]);
+                maxx1 = max1[x][i];
+            }
+            x = f[x][i];
+        }
+    }
+    if (val != maxx1)
+        minn = min(minn, val - maxx1);
+    else
+        minn = min(minn, val - maxx2);
+}
+void work() {
+    for (int i = 1; i <= m; ++i) {
+        if (!w[i].flagg) {
+            int s1 = w[i].x, s2 = w[i].y;
+            int lca = LCA(s1, s2);
+            change(s1, lca, w[i].z);
+            change(s2, lca, w[i].z);
+        }
+    }
+}
+int main() {
+    n = read();
+    m = read();
+    for (int i = 1; i <= m; ++i) {
+        w[i].x = read();
+        w[i].y = read();
+        w[i].z = read();
+    }
+    kruscal();
+    dfs(1);
+    work();
+    printf("%lld\n", ans + minn);
+}
+```
 
 ## 匈牙利算法（二分图最大匹配） (TODO)
 
