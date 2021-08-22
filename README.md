@@ -215,6 +215,53 @@ int main() {
 
 每个节点是一个 $(k, v)$ 二元组，一个满足二叉搜索树另一个满足堆。
 
+单调栈超基本笛卡尔建树模板
+
+```cpp
+#include <bits/stdc++.h>
+#define re register
+#define il inline
+#define LL long long
+using namespace std;
+template <typename T>
+il void read(T &ff) {
+    T rr = 1;
+    ff = 0;
+    char ch = getchar();
+    while (!isdigit(ch)) {
+        if (ch == '-') rr = -1;
+        ch = getchar();
+    }
+    while (isdigit(ch)) {
+        ff = (ff << 1) + (ff << 3) + (ch ^ 48);
+        ch = getchar();
+    }
+    ff *= rr;
+}
+
+const int N = 1e7 + 7;
+int n, a[N], stk[N], ls[N], rs[N];
+LL L, R;
+signed main() {
+    read(n);
+    for (int i = 1, pos = 0, top = 0; i <= n;
+         ++i) {  //这是按下标顺序插入元素的代码
+        read(a[i]);
+        //除了上述的维护左右儿子就是普通单调栈啦
+        pos = top;
+        while (pos && a[stk[pos]] > a[i]) pos--;
+        if (pos) rs[stk[pos]] = i;
+        if (pos < top) ls[i] = stk[pos + 1];
+        stk[top = ++pos] = i;
+    }
+    for (int i = 1; i <= n; ++i)
+        L ^= 1LL * i * (ls[i] + 1), R ^= 1LL * i * (rs[i] + 1);
+    printf("%lld %lld", L, R);
+    return 0;
+}
+
+```
+
 笛卡尔树算最大子矩阵
 
 ```cpp
