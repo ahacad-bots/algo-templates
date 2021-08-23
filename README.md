@@ -1898,6 +1898,39 @@ int main() {
 - `int __builtin_popcount (unsigned int x)`: 返回二进制表示中1的个数。
 - `int __builtin_parity (unsigned int x)`: 返回x的奇偶校验位，也就是x的1的个数模2的
 
+# STL
+
+## bitset
+
+### Constructor
+
+- `std::bitset<8> b1;`： 默认全 0 
+- `std::bitset<8> b2(42);`：`unsigned long long init`
+```cpp
+template< class CharT, class Traits, class Alloc >
+explicit bitset( const std::basic_string<CharT,Traits,Alloc>& str,
+                 typename std::basic_string<CharT,Traits,Alloc>::size_type
+                     pos = 0,
+                 typename std::basic_string<CharT,Traits,Alloc>::size_type
+                     n = std::basic_string<CharT,Traits,Alloc>::npos,
+                 CharT zero = CharT('0'),
+                 CharT one = CharT('1'));
+```
+- `std::bitset<8> b7("XXXXYYYY", 8, 'X', 'Y')`: string init, custom size, pos and 01 chars
+
+### Element access
+
+- `constexpr bool operator[]( std::size_t pos ) const;`：选择某位
+- `bool all() const noexcept;`: all 1
+- `bool any() const noexcept;`: any 1
+- `bool none() const noexcept;`: none 1
+- `std::size_t count() const noexcept;`: 多少个 1 
+- `bool test(std::size_t pos) const;`: 返回 pos 位的值，比 `[]` 多边界检查
+
+### Capacity
+
+- `constexpr std::size_t size() const noexcept;`: 大小，即初始化模板里的参数
+
 # 注意！
 
 > 十年OI一场空，不开long long见祖宗
