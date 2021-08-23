@@ -1918,7 +1918,6 @@ explicit bitset( const std::basic_string<CharT,Traits,Alloc>& str,
 ```
 - `std::bitset<8> b7("XXXXYYYY", 8, 'X', 'Y')`: string init, custom size, pos and 01 chars
 
-### Element access
 
 - `constexpr bool operator[]( std::size_t pos ) const;`：选择某位
 - `bool all() const noexcept;`: all 1
@@ -1928,8 +1927,27 @@ explicit bitset( const std::basic_string<CharT,Traits,Alloc>& str,
 - `bool test(std::size_t pos) const;`: 返回 pos 位的值，比 `[]` 多边界检查
 
 ### Capacity
-
 - `constexpr std::size_t size() const noexcept;`: 大小，即初始化模板里的参数
+
+### Modifiers
+- `bitset& set( std::size_t pos, bool value = true );`: 直接使用 `b.set() `全设为 1，否则按参数处理
+- `bitset& reset( std::size_t pos );`: set bit to false
+- `bitset& flip( std::size_t pos )`: true to false, false to true, 直接使用全部反转
+
+### Convertions
+
+```cpp
+template<
+    class CharT = char,
+    class Traits = std::char_traits<CharT>,
+    class Allocator = std::allocator<CharT>
+> std::basic_string<CharT,Traits,Allocator>
+    to_string(CharT zero = CharT('0'), CharT one = CharT('1')) const;
+```
+- `b.to_string('0', 'X')`
+- `unsigned long to_ulong() const`
+- `unsigned long long to_ullong() const`
+
 
 # 注意！
 
