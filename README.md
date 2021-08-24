@@ -1948,6 +1948,16 @@ template<
 - `unsigned long to_ulong() const`
 - `unsigned long long to_ullong() const`
 
+# STL Algorithms
+
+## `std::lower_bound`
+
+```cpp
+template< class ForwardIt, class T, class Compare >
+constexpr ForwardIt lower_bound( ForwardIt first, ForwardIt last, const T& value, Compare comp );
+```
+
+`[first, last)` 中找第一个**不小于** value 的元素。
 
 # 注意！
 
