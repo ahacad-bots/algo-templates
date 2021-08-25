@@ -1947,6 +1947,13 @@ template<
 - `b.to_string('0', 'X')`
 - `unsigned long to_ulong() const`
 - `unsigned long long to_ullong() const`
+ 
+## set
+
+### Modifiers
+
+- `std::pair<iterator,bool> insert( value_type&& value );`
+
 
 # STL Algorithms
 
@@ -1957,7 +1964,20 @@ template< class ForwardIt, class T, class Compare >
 constexpr ForwardIt lower_bound( ForwardIt first, ForwardIt last, const T& value, Compare comp );
 ```
 
-`[first, last)` 中找第一个**不小于** value 的元素。
+- `[first, last)` 中找第一个**不小于** (not less than) value 的元素。
+- `comp`: binary predicate which returns `true` fi the first argument is less than (ordered before) the second
+ 
+## `std::upper_bound`
+
+```cpp
+template< class ForwardIt, class T, class Compare >
+constexpr ForwardIt upper_bound( ForwardIt first, ForwardIt last, const T& value, Compare comp );
+```
+- Returns an iterator pointing to the first element in the range [first, last) that is **greater than** value, or last if no such element is found.
+
+
+
+
 
 # 注意！
 
