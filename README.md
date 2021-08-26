@@ -2312,15 +2312,23 @@ template<
 > std::basic_string<CharT,Traits,Allocator>
     to_string(CharT zero = CharT('0'), CharT one = CharT('1')) const;
 ```
-- `b.to_string('0', 'X')`
-- `unsigned long to_ulong() const`
-- `unsigned long long to_ullong() const`
+- to_string: `b.to_string('0', 'X')`
+- to_ulong: `unsigned long to_ulong() const`
+- to_ullong: `unsigned long long to_ullong() const`
  
 ## set
 
 ### Modifiers
-
-- `std::pair<iterator,bool> insert( value_type&& value );`
+- insert: `std::pair<iterator,bool> insert( value_type&& value );`: 插入
+- clear: `void clear() noexcept;`: 清除 set
+- erase: `iterator erase( const_iterator pos );`: 删除元素
+### Capacity
+- empty: `bool empty() const noexcept;`: 是否没有元素
+- size: `size_type size() const noexcept;`: 返回元素数量
+### Lookup
+- find: `const_iterator find( const Key& key ) const;`: 查找元素
+- count: `size_type count( const Key& key ) const`: 查找元素数量，只会返回 0 或 1
+- 
 
 
 # STL Algorithms
