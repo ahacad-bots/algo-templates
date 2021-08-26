@@ -183,10 +183,7 @@ struct bit {
 ### FHQ Treap
 
 ```cpp
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 const int MAX = 1e5 + 1;
 int n, m, tot, rt;
@@ -208,12 +205,12 @@ struct Treap {
     int merge(int x, int y) {
         if (!x || !y) return x + y;
         if (pos[x] < pos[y]) {
-            if (fl[x]) down(x);
+            // if (fl[x]) down(x);
             son[x][1] = merge(son[x][1], y);
             pus(x);
             return x;
         }
-        if (fl[y]) down(y);
+        // if (fl[y]) down(y);
         son[y][0] = merge(x, son[y][0]);
         pus(y);
         return y;
@@ -223,33 +220,64 @@ struct Treap {
             x = y = 0;
             return;
         }
-        if (fl[i]) down(i);
-        if (siz[son[i][0]] < k)
-            x = i, split(son[i][1], k - siz[son[i][0]] - 1, son[i][1], y);
+        // if (fl[i]) down(i);
+        if (w[i] <= k)
+            x = i, split(son[i][1], k, son[i][1], y);
         else
             y = i, split(son[i][0], k, x, son[i][0]);
         pus(i);
     }
+    int kth(int now, int k) {
+        while (1) {
+            if (k <= siz[son[now][0]])
+                now = son[now][0];
+            else if (k == siz[son[now][0]] + 1)
+                return now;
+            else
+                k -= siz[son[now][0]] + 1, now = son[now][1];
+        }
+    }
     void coutt(int i) {
         if (!i) return;
-        if (fl[i]) down(i);
+        // if (fl[i]) down(i);
         coutt(son[i][0]);
         printf("%d ", w[i]);
         coutt(son[i][1]);
     }
 } Tree;
+
 int main() {
-    scanf("%d%d", &n, &m);
-    for (int i = 1; i <= n; i++) rt = Tree.merge(rt, Tree.build(i));
+    scanf("%d", &m);
+    int op, a, x;
+    int y, z;
+    int root = 0;
+    // for (int i = 1; i <= n; i++) rt = Tree.merge(rt, Tree.build(i));
     for (int i = 1; i <= m; i++) {
-        int l, r, a, b, c;
-        scanf("%d%d", &l, &r);
-        Tree.split(rt, l - 1, a, b);
-        Tree.split(b, r - l + 1, b, c);
-        Tree.fl[b] ^= 1;
-        rt = Tree.merge(a, Tree.merge(b, c));
+        scanf("%d%d", &op, &a);
+        if (op == 1) {
+            Tree.split(root, a, x, y);
+            root = Tree.merge(Tree.merge(x, Tree.build(a)), y);
+        } else if (op == 2) {
+            Tree.split(root, a, x, z);
+            Tree.split(x, a - 1, x, y);
+            y = Tree.merge(Tree.son[y][0], Tree.son[y][1]);
+            root = Tree.merge(Tree.merge(x, y), z);
+        } else if (op == 3) {
+            Tree.split(root, a - 1, x, y);
+            printf("%d\n", Tree.siz[x] + 1);
+            root = Tree.merge(x, y);
+        } else if (op == 4) {
+            printf("%d\n", Tree.w[Tree.kth(root, a)]);
+        } else if (op == 5) {
+            Tree.split(root, a - 1, x, y);
+            printf("%d\n", Tree.w[Tree.kth(x, Tree.siz[x])]);
+            root = Tree.merge(x, y);
+        } else if (op == 6) {
+            Tree.split(root, a, x, y);
+            printf("%d\n", Tree.w[Tree.kth(y, 1)]);
+            root = Tree.merge(x, y);
+        }
     }
-    Tree.coutt(rt);
     return 0;
 }
 ```
