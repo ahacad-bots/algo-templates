@@ -178,6 +178,83 @@ struct bit {
 };
 ```
 
+## Treap
+
+### FHQ Treap
+
+```cpp
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+using namespace std;
+const int MAX = 1e5 + 1;
+int n, m, tot, rt;
+struct Treap {
+    int pos[MAX], siz[MAX], w[MAX];
+    int son[MAX][2];
+    bool fl[MAX];
+    void pus(int x) { siz[x] = siz[son[x][0]] + siz[son[x][1]] + 1; }
+    int build(int x) {
+        w[++tot] = x, siz[tot] = 1, pos[tot] = rand();
+        return tot;
+    }
+    void down(int x) {
+        swap(son[x][0], son[x][1]);
+        if (son[x][0]) fl[son[x][0]] ^= 1;
+        if (son[x][1]) fl[son[x][1]] ^= 1;
+        fl[x] = 0;
+    }
+    int merge(int x, int y) {
+        if (!x || !y) return x + y;
+        if (pos[x] < pos[y]) {
+            if (fl[x]) down(x);
+            son[x][1] = merge(son[x][1], y);
+            pus(x);
+            return x;
+        }
+        if (fl[y]) down(y);
+        son[y][0] = merge(x, son[y][0]);
+        pus(y);
+        return y;
+    }
+    void split(int i, int k, int &x, int &y) {
+        if (!i) {
+            x = y = 0;
+            return;
+        }
+        if (fl[i]) down(i);
+        if (siz[son[i][0]] < k)
+            x = i, split(son[i][1], k - siz[son[i][0]] - 1, son[i][1], y);
+        else
+            y = i, split(son[i][0], k, x, son[i][0]);
+        pus(i);
+    }
+    void coutt(int i) {
+        if (!i) return;
+        if (fl[i]) down(i);
+        coutt(son[i][0]);
+        printf("%d ", w[i]);
+        coutt(son[i][1]);
+    }
+} Tree;
+int main() {
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; i++) rt = Tree.merge(rt, Tree.build(i));
+    for (int i = 1; i <= m; i++) {
+        int l, r, a, b, c;
+        scanf("%d%d", &l, &r);
+        Tree.split(rt, l - 1, a, b);
+        Tree.split(b, r - l + 1, b, c);
+        Tree.fl[b] ^= 1;
+        rt = Tree.merge(a, Tree.merge(b, c));
+    }
+    Tree.coutt(rt);
+    return 0;
+}
+```
+
+
 ## 求树的直径
 
 两次 dfs 方法求直径
