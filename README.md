@@ -1247,6 +1247,25 @@ int main() {
 
 ## 网络流 (TODO)
 
+## 拓扑序
+
+### Kahn 算法
+
+```cpp
+void top() {
+    queue<int> q;
+    for (int i = 0; i < n; i++) {
+        if (in[i] == 0) q.push(i);
+    }
+    while(!q.empty()) {
+        int u = q.top(); q.pop();
+        for (auto nxt: edges[u]) {
+            if (--in[nxt] == 0) q.push(nxt);
+        }
+    }
+}
+```
+
 # DP
 
 ## 01 背包
@@ -2344,6 +2363,18 @@ template<
 - count: `size_type count( const Key& key ) const`: 查找元素数量，只会返回 0 或 1
 - 
 
+## priority_queue
+
+- 自定义 cmp 函数
+```cpp
+struct node {
+    int i, j, num, f;
+};  
+struct cmp1 {
+    bool operator()(node x, node y) { return x.num > y.num; }
+};                                           
+priority_queue<node, vector<node>, cmp1> q;  
+```
 
 # STL Algorithms
 
