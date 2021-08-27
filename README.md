@@ -1241,6 +1241,8 @@ int main() {
 
 ## 匈牙利算法（二分图最大匹配） 
 
+复杂度 $O(n \times e + m)$, n 是左边点数量，m 是右边点数量，e 是图上边数量
+
 ```cpp
 #include <cstdio>
 #include <vector>
