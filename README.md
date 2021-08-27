@@ -28,6 +28,8 @@ void clear() {
 
 int main() {
     ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+    
+    return 0;
 }
 ```
 
@@ -1311,6 +1313,18 @@ int main(int argc, char** argv) {//一维数组实现的完全背包模板
 	}
 	
 	return 0;
+}
+```
+
+## LIS 
+
+```cpp
+void solve () {
+  fill(dp, dp + top, INF);
+  for (int i = 0;i < top; i++) {
+    *lower_bound(dp, dp + top, t[i]) = t[i];
+  }
+  printf("%d\n", lower_bound(dp, dp + top, INF) - dp);
 }
 ```
 
