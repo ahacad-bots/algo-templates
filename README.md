@@ -1535,6 +1535,30 @@ int main() {
 }
 ```
 
+## Lyndon 分解
+
+```cpp
+#include <cstdio>
+#include <cstring>
+char s[5000005];
+int main() {
+    scanf("%s", s + 1);
+    int len = strlen(s + 1);
+    int i, j, k, ans = 0;
+    i = 1;
+    while (i <= len) {
+        for (j = i, k = i + 1; k <= len && s[k] >= s[j]; ++k)
+            if (s[k] > s[j])
+                j = i;
+            else
+                ++j;
+        while (i <= j) ans ^= (i + k - j - 1), i += k - j;
+    }
+    printf("%d", ans);
+    return 0;
+}
+```
+
 ## AC 自动机
 
 统计每个子串出现次数
