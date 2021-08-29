@@ -2438,6 +2438,58 @@ int main() {
 
 ## 扫描线 (TODO)
 
+## 凸包
+
+算凸包周长
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int n;
+struct vec {
+    double x, y;
+    vec(double xx = 0, double yy = 0) : x(xx), y(yy) {}
+    vec operator-(const vec &a) { return vec(x - a.x, y - a.y); }
+} p[100010], sta[100010];
+int top;
+double K(vec a) { return atan2(a.y, a.x); }
+double dis(vec a, vec b) {
+    return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+}
+bool cmp(vec a, vec b) {
+    double t = K(a - p[1]) - K(b - p[1]);
+    if (t)
+        return t < 0;
+    else
+        return dis(p[1], a) < dis(p[1], b);
+}
+double cp(vec a, vec b) { return a.x * b.y - a.y * b.x; }
+double ans;
+int main() {
+    scanf("%d", &n);
+    if (n == 1) return putchar('0'), 0;
+    for (int i = 1; i <= n; ++i) {
+        scanf("%lf%lf", &p[i].x, &p[i].y);
+        if (p[1].y > p[i].y)
+            swap(p[1], p[i]);
+        else if (p[1].y == p[i].y && p[1].x > p[i].x)
+            swap(p[1], p[i]);
+    }
+    sort(p + 2, p + n + 1, cmp);
+    sta[1] = p[1];
+    sta[top = 2] = p[2];
+    for (int i = 3; i <= n; ++i) {
+        while (top >= 2 &&
+               cp(p[i] - sta[top - 1], sta[top] - sta[top - 1]) >= 0)
+            --top;
+        sta[++top] = p[i];
+    }
+    sta[++top] = p[1];
+    for (int i = 1; i < top; ++i) ans += sqrt(dis(sta[i], sta[i + 1]));
+    printf("%.2f", ans);
+}
+```
+
 # C++ 相关
 
 ## 位运算
