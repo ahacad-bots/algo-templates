@@ -2250,6 +2250,43 @@ int main() {
 }
 ```
 
+## 进制转换
+
+借助十进制为媒介转换
+
+```cpp
+int c[10000000];
+void transform(int f, int t) { // from to
+    int e;
+    int sum = 0;
+    string a;
+    cin >> a;
+    for (int x = 0; (int)x < a.size(); x++) {
+        if (a[x] < 'A') {
+            e = pow(f, (int)a.size() - x - 1);
+            e *= (a[x] - '0');
+            sum += e;
+        } else {
+            e = pow(f, (int)a.size() - x - 1);
+            e *= (a[x] - 'A' + 10);
+            sum += e;
+        }
+    }
+    int g = 0;
+    while (sum > 0) {
+        c[g++] = sum % t;
+        sum /= t;
+    }
+    for (int i = g - 1; i >= 0; i--) {
+        if (c[i] >= 10) {
+            printf("%c", c[i] + 'A' - 10);
+        } else {
+            printf("%d", c[i]);
+        }
+    }
+}
+```
+
 # 数据结构
 
 ## ST 表
