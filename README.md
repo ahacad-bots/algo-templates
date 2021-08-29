@@ -2436,6 +2436,64 @@ int main() {
 
 # 计算几何
 
+计算几何通用头
+
+```cpp
+namespace geometry {
+
+struct Vector {
+    double x, y;
+    Vector(double xx = 0, double yy = 0) : x(xx), y(yy) {}
+};
+typedef Vector Point;
+const double epsilon = 1e-10;
+
+Vector operator+(Vector a, Vector b) { return Vector(a.x + b.x, a.y + b.y); }
+Vector operator-(Vector a, Vector b) { return Vector(a.x - b.x, a.y - b.y); }
+Vector operator*(Vector a, double p) { return Vector(a.x * p, a.y * p); }
+Vector operator/(Vector a, double p) { return Vector(a.x / p, a.y / p); }
+
+bool operator<(const Point &a, const Point &b) {
+    return a.x < b.x || (a.x == b.x && a.y < b.y);
+}
+
+int dcmp(double x) {
+    if (fabs(x) < epsilon)
+        return 0;
+    else
+        return x < 0 ? -1 : 1;
+}
+bool operator==(const Point &a, const Point &b) {
+    return (!dcmp(a.x - b.x)) && (!dcmp(a.y - b.y));
+}
+
+double dot(Vector a, Vector b) { return a.x * b.x + a.y * b.y; }
+double length(Vector a)  // Vector
+{
+    return sqrt(dot(a, a));
+}
+double angle(Vector a, Vector b) {
+    return acos(dot(a, b) / length(a) / length(b));
+}
+
+double cross(Vector a, Vector b) { return a.x * b.y - a.y * b.x; }
+double area_2(Point a, Point b, Point c) { return cross(b - a, c - a); }
+double length(Point a, Point b)  // 2 points
+{
+    return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+
+Vector rotate(Vector a, double rad) {
+    return Vector(a.x * cos(rad) - a.y * sin(rad),
+                  a.x * sin(rad) + a.y * cos(rad));
+}
+Vector normal(Vector a) {
+    double l = length(a);
+    return Vector(-a.y / l, a.x / l);
+}
+}  // namespace geometry
+```
+
 ## 扫描线 (TODO)
 
 ## 凸包
