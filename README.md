@@ -9,6 +9,7 @@ using namespace std;
 
 #define rep(i, x, y) for (auto i = (x); i <= (y); i++)
 #define dep(i, x, y) for (auto i = (x); i >= (y); i--)
+#define DEBUG false
 #define ____ puts("\n_______________\n") 
 #define debug(x)  if (DEBUG) cout<< #x << " => " << (x) << endl
 
