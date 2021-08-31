@@ -512,6 +512,25 @@ int main() {
 }
 ```
 
+## 求树的重心
+
+```cpp
+inline void getzx(int t, int fat) {
+    int i, j;
+    sz[t] = 1;
+    maxp[t] = 0;
+    for (i = head[t]; i; i = e[i].next) {
+        j = e[i].to;
+        if (j == fat || vis[j]) continue;
+        getzx(j, t);
+        sz[t] += sz[j];
+        maxp[t] = max(sz[j], maxp[t]);
+    }
+    maxp[t] = max(maxp[t], tot - sz[t]);
+    if (maxp[t] < maxp[rt]) rt = t;
+}
+```
+
 ## 笛卡尔树
 
 每个节点是一个 $(k, v)$ 二元组，一个满足二叉搜索树另一个满足堆。
@@ -2579,7 +2598,7 @@ explicit bitset( const std::basic_string<CharT,Traits,Alloc>& str,
 - `std::bitset<8> b7("XXXXYYYY", 8, 'X', 'Y')`: string init, custom size, pos and 01 chars
 
 
-- `constexpr bool operator[]( std::size_t pos ) const;`：选择某位
+- `constexpr bool operator[]( std::size_t pos ) const;`：选择某位，注意位是从低位到高位的
 - `bool all() const noexcept;`: all 1
 - `bool any() const noexcept;`: any 1
 - `bool none() const noexcept;`: none 1
