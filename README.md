@@ -1983,6 +1983,47 @@ int euler_phi(int n) {
 }
 ```
 
+## （扩展）欧拉定理
+
+```cpp
+#include <cstdio>
+int a, m, phi = 1;
+int bm, flag;
+
+int qPow(int b, int e) {
+	int a = 1;
+	for (; e; e >>= 1, b = (long long)b * b % m)
+		if(e & 1) a = (long long)a * b % m;
+	return a;
+}
+int euler_phi(int n) {
+  int ans = n;
+  for (int i = 2; i * i <= n; i++)
+    if (n % i == 0) {
+      ans = ans / i * (i - 1);
+      while (n % i == 0) n /= i;
+    }
+  if (n > 1) ans = ans / n * (n - 1);
+  return ans;
+}
+
+
+int main() {
+	scanf("%d%d", &a, &m);
+	a %= m;
+	int mm = m;
+    int phi =  euler_phi(m);
+	char ch;
+	while ((ch = getchar()) < '0' || ch > '9') ;
+	while (bm = bm * 10ll + (ch ^ '0'), (ch = getchar()) >= '0' && ch <= '9')
+		if (bm >= phi) flag = 1, bm %= phi;
+	if (bm >= phi) flag = 1, bm %= phi;
+	if (flag) bm += phi;
+	printf("%d", qPow(a, bm));
+	return 0;
+}
+```
+
 ## 快速幂
 
 ```cpp
