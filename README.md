@@ -302,36 +302,36 @@ int main() {
 
 ```cpp
 #define lowbit(x) ((x) & -(x))
-int arr[N]; void add(int x, int k){ while(x <= n){ arr[x] += k; x += lowbit(x); } }
-int qry(int x){int sum = 0; while(x) {sum += arr[x]; x -= lowbit(x);} return sum;}
-int qry(int l , int r){return qry(r) - qry(l - 1);}
+ll arr[N]; void add(ll x, ll k){ while(x <= n){ arr[x] += k; x += lowbit(x); } }
+ll qry(ll x){ll sum = 0; while(x) {sum += arr[x]; x -= lowbit(x);} return sum;}
+ll qry(ll l , ll r){return qry(r) - qry(l - 1);}
 ```
 
 区间查询区间修改
 
 ```cpp
 struct bit {
-    int t1[maxn], t2[maxn], n; // !!!: 注意要初始化 n 为你想要设置的数量上限
+    ll t1[maxn], t2[maxn], n; // !!!: 注意要初始化 n 为你想要设置的数量上限
     
-    void _add(int k, int v) {
-      int v1 = k * v;
+    void _add(ll k, ll v) {
+      ll v1 = k * v;
       while (k <= n) {
         t1[k] += v, t2[k] += v1;
         k += k & -k;
       }
     }
-    int _getsum(int *t, int k) {
-      int ret = 0;
+    ll _getsum(ll *t, ll k) {
+      ll ret = 0;
       while (k) {
         ret += t[k];
         k -= k & -k;
       }
       return ret;
     }
-    void add(int l, int r, int v) {
+    void add(ll l, ll r, ll v) {
       _add(l, v), _add(r + 1, -v);  // 将区间加差分为两个前缀加
     }
-    long long getsum(int l, int r) {
+    long long getsum(ll l, ll r) {
       return (r + 1ll) * _getsum(t1, r) - 1ll * l * _getsum(t1, l - 1) -
              (_getsum(t2, r) - _getsum(t2, l - 1));
     }
