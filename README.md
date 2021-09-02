@@ -139,6 +139,163 @@ struct node {
 
 ```
 
+### 线段树维护矩阵
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, x, y) for (auto i = (x); i <= (y); i++)
+#define dep(i, x, y) for (auto i = (x); i >= (y); i--)
+#define DEBUG false
+#define ____ puts("\n_______________\n")
+#define debug(x) \
+    if (DEBUG) cout << #x << " => " << (x) << endl
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int, int> pii;
+ll MOD = 571373;
+
+void init() {
+    //
+}
+void solve() {
+    //
+}
+void clear() {
+    //
+}
+struct matrix {
+    ll a[2][2];
+    void crt() {
+        a[0][0] = a[1][1] = 1;
+        a[0][1] = a[1][0] = 0;
+        return;
+    }
+    void clear() {
+        a[0][0] = a[0][1] = a[1][0] = a[1][1] = 0;
+        return;
+    }
+    void crt1(ll x) {
+        clear();
+        a[0][0] = x;
+        a[1][1] = 1;
+        return;
+    }
+    void crt2(ll x) {
+        clear();
+        a[0][0] = 1;
+        a[1][0] = x;
+        a[1][1] = 1;
+        return;
+    }
+};
+
+struct node {
+    int s, e, m;
+    matrix tag;
+    bool flag = false;
+    ll w[2];
+
+    node *l, *r;
+
+    node(int S, int E) {
+        tag.crt();
+        s = S, e = E, m = (s + e) / 2;
+        if (s != e) {
+            l = new node(s, m);
+            r = new node(m + 1, e);
+        } else {
+            w[1] = 1;
+        }
+    }
+    void timesA(matrix y) {
+        int f[2];
+        f[0] = (w[0] * y.a[0][0] + w[1] * y.a[1][0]) % MOD;
+        f[1] = (w[0] * y.a[0][1] + w[1] * y.a[1][1]) % MOD;
+        w[0] = f[0], w[1] = f[1];
+    }
+    void timesB(matrix y) {
+        matrix z;
+        z.a[0][0] = (tag.a[0][0] * y.a[0][0] + tag.a[0][1] * y.a[1][0]) % MOD;
+        z.a[0][1] = (tag.a[0][0] * y.a[0][1] + tag.a[0][1] * y.a[1][1]) % MOD;
+        z.a[1][0] = (tag.a[1][0] * y.a[0][0] + tag.a[1][1] * y.a[1][0]) % MOD;
+        z.a[1][1] = (tag.a[1][0] * y.a[0][1] + tag.a[1][1] * y.a[1][1]) % MOD;
+        tag = z;
+        return;
+    }
+    void apply(matrix ntag) {
+        flag = true;
+        timesB(ntag);
+        timesA(ntag);
+    }
+    void push() {
+        if (s == e) return;
+        if (!flag) return;
+        flag = false;
+        l->apply(tag);
+        r->apply(tag);
+        tag.crt();
+    }
+    void update(int S, int E, matrix type) {
+        push();
+        if (S <= s && e <= E) {
+            apply(type);
+            return;
+        }
+        if (S <= m) l->update(S, E, type);
+        if (E > m) r->update(S, E, type);
+        w[0] = (l->w[0] + r->w[0]) % MOD;
+        w[1] = (l->w[1] + r->w[1]) % MOD;
+        return;
+    }
+    long long query(int S, int E) {
+        if (S <= s && e <= E) {
+            return w[0];
+        }
+        push();
+        ll res = 0;
+        if (S <= m) res += l->query(S, E);
+        if (E > m) res += r->query(S, E);
+        res %= MOD;
+        return res;
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+    int n, m;
+    cin >> n >> m >> MOD;
+    node root(1, n);
+    int tmp;
+    rep(i, 1, n) {
+        cin >> tmp;
+        matrix type;
+        type.crt2(tmp);
+        root.update(i, i, type);
+    }
+    int op, x, y, k;
+    while (m--) {
+        cin >> op;
+        if (op == 1 || op == 2) {
+            cin >> x >> y >> k;
+            matrix type;
+            if (op == 1)
+                type.crt1(k);
+            else
+                type.crt2(k);
+            root.update(x, y, type);
+        } else if (op == 3) {
+            cin >> x >> y;
+            cout << root.query(x, y) << endl;
+        }
+    }
+
+    return 0;
+}
+```
+
 ## 树状数组 (BIT)
 
 区间查询单点修改
