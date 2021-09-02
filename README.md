@@ -302,7 +302,7 @@ int main() {
 
 ```cpp
 #define lowbit(x) ((x) & -(x))
-int arr[N]; void add(int x){ while(x <= N){ ++arr[x]; x += lowbit(x); } }
+int arr[N]; void add(int x, int k){ while(x <= n){ arr[x] += k; x += lowbit(x); } }
 int qry(int x){int sum = 0; while(x) {sum += arr[x]; x -= lowbit(x);} return sum;}
 int qry(int l , int r){return qry(r) - qry(l - 1);}
 ```
