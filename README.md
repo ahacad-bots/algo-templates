@@ -84,7 +84,64 @@ inline void write(T x) {
 
 ## 线段树 (segment tree)
 
-树写法，比较直观。
+### 数组写法
+
+```cpp
+struct sgt {
+    ll ans[MAXN << 2], lazy[MAXN << 2], a[MAXN];
+    inline ll ls(ll x) { return x << 1; }
+    inline ll rs(ll x) { return x << 1 | 1; }
+
+    inline void push_up(ll u) { ans[u] = ans[ls(u)] + ans[rs(u)]; }
+    void build(ll u, ll l, ll r) {
+        lazy[u] = 0;
+        if (l == r) {
+            ans[u] = a[l];
+            return;
+        }
+        ll mid = (l + r) >> 1;
+        build(ls(u), l, mid);
+        build(rs(u), mid + 1, r);
+        push_up(u);
+    }
+    inline void f(ll u, ll l, ll r, ll k) {
+        lazy[u] = lazy[u] + k;
+        ans[u] = ans[u] + k * (r - l + 1);
+    }
+    inline void push_down(ll u, ll l, ll r) {
+        ll mid = (l + r) >> 1;
+        f(ls(u), l, mid, lazy[u]);
+        f(rs(u), mid + 1, r, lazy[u]);
+        lazy[u] = 0;
+    }
+    inline void update(ll nl, ll nr, ll l, ll r, ll u, ll k) {
+        if (nl <= l && r <= nr) {
+            ans[u] += k * (r - l + 1);
+            lazy[u] += k;
+            return;
+        }
+        push_down(u, l, r);
+        ll mid = (l + r) >> 1;
+        if (nl <= mid) update(nl, nr, l, mid, ls(u), k);
+        if (nr > mid) update(nl, nr, mid + 1, r, rs(u), k);
+        push_up(u);
+    }
+    ll query(ll q_x, ll q_y, ll l, ll r, ll u) {
+        ll res = 0;
+        if (q_x <= l && r <= q_y) return ans[u];
+        ll mid = (l + r) >> 1;
+        push_down(u, l, r);
+        if (q_x <= mid) res += query(q_x, q_y, l, mid, ls(u));
+        if (q_y > mid) res += query(q_x, q_y, mid + 1, r, rs(u));
+        return res;
+    }
+} sg;
+```
+
+
+### 树写法
+
+比较直观，但是常数比较大可能会卡。
 
 ```cpp
 struct node {
