@@ -3023,6 +3023,95 @@ int main() {
 }
 ```
 
+## 求直线交点
+
+```cpp
+#include<bits/stdc++.h>
+#define ll long long
+using namespace std;
+const double eps = 1e-10;
+
+inline int sign(const double &x)
+{
+	if(x>eps) return 1;
+	if(x<-eps) return -1;
+	return 0;
+}
+struct Point
+{
+	double x,y;
+		Point(double _x=0,double _y=0):x(_x),y(_y) {	}
+		Point operator -(const Point &op2) const {
+		return Point(x-op2.x,y-op2.y);
+	}
+		double operator ^(const Point &op2) const {
+		return x*op2.y-y*op2.x;
+	}
+};
+inline double sqr(const double &x) {
+	return x*x;
+}
+inline double mul(const Point &p0,const Point &p1,const Point &p2) {
+	return (p1-p0) ^ (p2-p0);
+}
+inline double dis2(const Point &p0,const Point &p1) {
+	return sqr(p0.x-p1.x)+sqr(p0.y-p1.y);
+}
+inline double dis(const Point &p0,const Point &p1) {
+	return sqrt(dis2(p0,p1));
+}
+inline int cross(const Point &p1,const Point &p2,const Point &p3,const Point &p4,Point &p) {
+	double a1 = mul(p1,p2,p3),a2 = mul(p1,p2,p4);
+	if(sign(a1)==0 && sign(a2)==0) return 2;
+	if(sign(a1-a2)==0) return 0;
+	p.x = (a2*p3.x-a1*p4.x) /(a2-a1);
+	p.y = (a2*p3.y-a1*p4.y) /(a2-a1);
+	return 1;
+}
+Point p1,p2,p3,p4,p;
+Point e[1005], ans[1005];
+bool cmp(Point a, Point b) {
+	return dis(a, p1) < dis(b, p1);
+}
+int main()
+{
+	int n, m, id = 0;
+	cin >> n >> m;
+	cin >> p1.x >> p1.y >> p2.x >> p2.y;
+	for (int i = 1; i <= n; i++) {
+		cin >> e[i].x >> e[i].y;
+	}
+	for (int op = 1; op <= m; op++) {
+		int h, k;
+		id = 0;
+		cin >> h >> k;
+		p3.x = e[h].x;
+		p3.y = e[h].y;
+		for (int i = 1; i <= n; i++) {
+			if (i == h) continue;
+			p4.x = e[i].x;
+			p4.y = e[i].y;
+			int flag = cross(p1,p2,p3,p4,p);
+			if (flag == 0 || flag == 2) continue;
+			else {
+				if (p.x < p1.x && p.x < p2.x) continue;
+				if (p.y < p1.y && p.y < p2.y) continue;
+				if (p.x > p1.x && p.x > p2.x) continue;
+				if (p.y > p1.y && p.y > p2.y) continue;
+				ans[++id].x = p.x;
+				ans[id].y = p.y;
+			}
+		}
+		sort(ans+1, ans+1+id, cmp);
+		if (id < k) cout << -1 << endl;
+		else {
+			printf("%.6lf %.6lf\n", ans[k].x, ans[k].y);
+		}
+	}
+	return 0;
+}
+```
+
 # C++ 相关
 
 ## 位运算
