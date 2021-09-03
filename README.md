@@ -1600,6 +1600,16 @@ int main(int argc, char** argv) {//一维数组实现的完全背包模板
 }
 ```
 
+## 状压
+
+
+### 枚举子集合
+```cpp
+for (int sub = S; sub; sub = (sub - 1) & S) {
+	// sub 为 S 的子集
+}
+```
+
 ## LIS 
 
 ```cpp
