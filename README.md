@@ -84,7 +84,7 @@ inline void write(T x) {
 
 ## 线段树 (segment tree)
 
-### 数组写法
+### 数组区间和
 
 ```cpp
 struct sgt {
@@ -136,6 +136,43 @@ struct sgt {
         return res;
     }
 } sg;
+```
+
+### 数组区间最大值
+
+```cpp
+int N, M, a[maxn];
+int maxA[maxn * 4];
+void pushup(int id) { maxA[id] = max(maxA[id << 1], maxA[id << 1 | 1]); }
+void build(int id, int l, int r) {
+    if (l == r) {
+        maxA[id] = a[l];
+        return;
+    }
+    int mid = (l + r) >> 1;
+    build(id << 1, l, mid);
+    build(id << 1 | 1, mid + 1, r);
+    pushup(id);
+}
+void update(int id, int l, int r, int x, int v) {
+    if (l == r) {
+        maxA[id] = v;
+        return;
+    }
+    int mid = (l + r) >> 1;
+    if (x <= mid)
+        update(id << 1, l, mid, x, v);
+    else
+        update(id << 1 | 1, mid + 1, r, x, v);
+    pushup(id);
+}
+int query(int id, int l, int r, int x, int y) {
+    if (x <= l && y >= r) return maxA[id];
+    int mid = (l + r) >> 1, ret = -inf;
+    if (x <= mid) ret = max(ret, query(id << 1, l, mid, x, y));
+    if (y > mid) ret = max(ret, query(id << 1 | 1, mid + 1, r, x, y));
+    return ret;
+}
 ```
 
 
@@ -353,7 +390,7 @@ int main() {
 
 ## 树状数组 (BIT)
 
-区间查询单点修改
+### 区间查询单点修改
 
 ```cpp
 #define lowbit(x) ((x) & -(x))
@@ -362,7 +399,7 @@ ll qry(ll x){ll sum = 0; while(x) {sum += arr[x]; x -= lowbit(x);} return sum;}
 ll qry(ll l , ll r){return qry(r) - qry(l - 1);}
 ```
 
-区间查询区间修改
+### 区间查询区间修改
 
 ```cpp
 struct bit {
@@ -391,6 +428,33 @@ struct bit {
              (_getsum(t2, r) - _getsum(t2, l - 1));
     }
 };
+```
+
+### 区间最值单点修改
+
+```cpp
+int n;
+int c[maxn], d[maxn];  //另开一个数组维护原始成绩值，利用它更新max
+void update(int x) {
+    while (x <= n) {
+        d[x] = c[x];
+        int lx = lowbit(x);
+        for (int i = 1; i < lx; i <<= 1)  //这里是注意点
+            d[x] = max(d[x], d[x - i]);
+        x += lowbit(x);
+    }
+}
+int getmax(int l, int r) {
+    int ans = 0;
+    while (r >= l) {
+        ans = max(ans, c[r--]);
+        while (r - lowbit(r) >= l) {
+            ans = max(ans, d[r]);
+            r -= lowbit(r);
+        }
+    }
+    return ans;
+}
 ```
 
 ## Treap
