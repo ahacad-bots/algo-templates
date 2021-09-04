@@ -141,8 +141,6 @@ struct sgt {
 
 ### 树写法
 
-比较直观，但是常数比较大可能会卡。
-
 ```cpp
 struct node {
     int s, e, m;
