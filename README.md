@@ -1785,7 +1785,7 @@ int main() {
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-const int N = 109, M = 10009;
+const int N = 109, M = 10009; // !!! 注意这里 N M 都开得比较小
 struct edge {
     int u, v, w;
 } e[M];  //用边表存储
@@ -1795,7 +1795,7 @@ int zl() {
     while (1) {
         for (int i = 1; i <= n; i++) mn[i] = 1e9, fa[i] = tp[i] = lp[i] = 0;
 
-        for (int i = 1, u, v, w; i <= m; i++)  // Step 1: 贪心找每个点的最小入边
+        for (int i = 1, v, w; i <= m; i++)  // Step 1: 贪心找每个点的最小入边
             if (e[i].u != e[i].v && (w = e[i].w) < mn[v = e[i].v])
                 mn[v] = w, fa[v] = e[i].u;
         mn[root] = 0;
