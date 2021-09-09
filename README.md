@@ -1780,6 +1780,56 @@ int main() {
 }
 ```
 
+## 最小树形图（朱刘算法）
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const int N = 109, M = 10009;
+struct edge {
+    int u, v, w;
+} e[M];  //用边表存储
+
+int n, m, root, mn[N], fa[N], tp[N], lp[N], tot, ans;
+int zl() {
+    while (1) {
+        for (int i = 1; i <= n; i++) mn[i] = 1e9, fa[i] = tp[i] = lp[i] = 0;
+
+        for (int i = 1, u, v, w; i <= m; i++)  // Step 1: 贪心找每个点的最小入边
+            if (e[i].u != e[i].v && (w = e[i].w) < mn[v = e[i].v])
+                mn[v] = w, fa[v] = e[i].u;
+        mn[root] = 0;
+        for (int u = 1; u <= n; u++) {
+            ans += mn[u];
+            if (mn[u] == 1e9) return -1;
+        }  // Step 2: 如果有点没有入边就返回 -1 
+
+        for (int u = 1, v = 1; u <= n; u++, v = u) {  // Step 3: 找环并记录
+            while (v != root && tp[v] != u && !lp[v]) tp[v] = u, v = fa[v]; // 遍历每个节点uu，然后沿着fa一路逆向走，直到根或者前驱是自己的点（路径压缩）或是环上点
+            if (v != root && !lp[v]) {
+                lp[v] = ++tot;
+                for (int k = fa[v]; k != v; k = fa[k]) lp[k] = tot;
+            }
+        }
+        if (!tot) return ans;  // Step 4: 没环已结束
+        for (int i = 1; i <= n; i++)
+            if (!lp[i]) lp[i] = ++tot;  // Step 5: 记录孤立点为环
+
+        for (int i = 1; i <= m; i++)  // Step 6: 缩点
+            e[i].w -= mn[e[i].v], e[i].u = lp[e[i].u], e[i].v = lp[e[i].v];
+        n = tot, root = lp[root], tot = 0;  // Step 7: 重置、进入下一次循环
+    }
+}
+
+int main() {
+    scanf("%d%d%d", &n, &m, &root);
+    for (int i = 1, u, v, w; i <= m; i++)
+        scanf("%d%d%d", &u, &v, &w), e[i] = (edge){u, v, w};
+    printf("%d", zl());
+    return 0;
+}
+```
+
 ## 网络流 (TODO)
 
 ## 拓扑序
