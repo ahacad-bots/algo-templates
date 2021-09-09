@@ -2377,65 +2377,63 @@ int main() {
 ## 求行列式值
 
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
 using namespace std;
-typedef long long ll;
-const int N = 602;
-inline void read(int &x) {
-    int c = getchar();
-    while ((c < 48) || (c > 57)) c = getchar();
-    x = c ^ 48;
-    c = getchar();
-    while ((c >= 48) && (c <= 57)) {
-        x = x * 10 + (c ^ 48);
-        c = getchar();
-    }
-}
-int a[N][N];
-int n, p, i, j;
-int cal(int a[][N], int n, const int p) {
-    int i, j, k, r = 1, fh = 0, l;
-    for (i = 1; i <= n; i++) {
-        k = i;
-        for (j = i; j <= n; j++)
-            if (a[j][i]) {
-                k = j;
-                break;
-            }
-        if (a[k][i] == 0) return 0;
-        for (++j; j <= n; j++)
-            if (a[j][i] && a[j][i] < a[k][i]) k = j;
-        if (i != k) {
-            swap(a[k], a[i]);
-            fh ^= 1;
+
+typedef long long LL;
+const int maxn = 210;
+LL a[maxn][maxn];
+int n;
+LL p;
+
+LL det(int n, LL p) {
+    LL ans = 1;
+    bool flag;
+
+    for (int i = 1; i <= n; i++) {
+        if (!a[i][i]) {
+            flag = 0;
+            for (int j = i + 1; j <= n; j++)
+                if (a[j][i]) {
+                    flag = 1;
+                    for (int k = i; k <= n; k++) swap(a[i][k], a[j][k]);
+                    ans = -ans;
+                    break;
+                }
+            if (!flag) return 0;
         }
-        for (j = i + 1; j <= n; j++) {
-            if (a[j][i] > a[i][i]) {
-                swap(a[j], a[i]);
-                fh ^= 1;
-            }
+
+        for (int j = i + 1; j <= n; j++) {
             while (a[j][i]) {
-                l = a[i][i] / a[j][i];
-                for (k = i; k <= n; k++)
-                    a[i][k] = (a[i][k] + (ll)(p - l) * a[j][k]) % p;
-                swap(a[j], a[i]);
-                fh ^= 1;
+                LL t = a[i][i] / a[j][i];
+                for (int k = i; k <= n; k++) {
+                    a[i][k] -= t * a[j][k];
+                    a[i][k] %= p;
+                    swap(a[i][k], a[j][k]);
+                }
+                ans = -ans;
             }
         }
-        r = (ll)r * a[i][i] % p;
+        ans *= a[i][i];
+        ans %= p;
     }
-    if (fh) return (p - r) % p;
-    return r;
+    return (ans + p) % p;
 }
+
 int main() {
-    read(n);
-    read(p);
-    for (i = 1; i <= n; i++)
-        for (j = 1; j <= n; j++) {
-            read(a[i][j]);
-            a[i][j] %= p;
+    while (scanf("%d%lld", &n, &p) == 2) {
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                scanf("%lld", &a[i][j]);
+                a[i][j] %= p;
+            }
         }
-    printf("%d", cal(a, n, p));
+        LL ans = det(n, p);
+        printf("%lld\n", ans);
+    }
+    return 0;
 }
 ```
 
