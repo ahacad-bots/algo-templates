@@ -1677,6 +1677,112 @@ int main() {
 }
 ```
 
+## Matrix-tree theorem
+
+```cpp
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <iostream>
+using namespace std;
+#define mod 10007
+int N, R;
+struct Point  //点的定义
+{
+    int x, y;
+    Point(int x = 0, int y = 0) : x(x), y(y) {}
+} P[301];
+Point operator-(Point A, Point B) { return Point(A.x - B.x, A.y - B.y); }
+double Cross(Point A, Point B)  //叉积
+{
+    return A.x * B.y - A.y * B.x;
+}
+int dcmp(double x)  //精度
+{
+    if (fabs(x) < 1e-0)
+        return 0;
+    else
+        return x < 0 ? -1 : 1;
+}
+double Dot(Point A, Point B)  //点积
+{
+    return A.x * B.x + A.y * B.y;
+}
+double Distance(Point A, Point B) {
+    return (A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y);
+}
+bool onSegment(Point p, Point a1, Point a2)  //判断点是否在线段上
+{
+    return dcmp(Cross(a1 - p, a2 - p)) == 0 && dcmp(Dot(a1 - p, a2 - p)) < 0;
+}
+bool check(int k1, int k2)  //判断两点之间的距离小于等于R且中间没有点阻隔
+{
+    if (Distance(P[k1], P[k2]) > R * R) return false;
+    for (int i = 0; i < N; i++)
+        if (i != k1 && i != k2)
+            if (onSegment(P[i], P[k1], P[k2])) return false;
+    return true;
+}
+long long INV(long long a, long long m)  //求a*x=1(mod m)的逆元x
+{
+    if (a == 1) return 1;
+    return INV(m % a, m) * (m - m / a) % m;
+}
+struct Matrix {
+    int mat[301][301];
+    Matrix() { memset(mat, 0, sizeof(mat)); }
+    int det(int n) {
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                mat[i][j] = (mat[i][j] % mod + mod) % mod;
+        int res = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++)
+                if (mat[j][i] != 0) {
+                    for (int k = i; k < n; k++) swap(mat[i][k], mat[j][k]);
+                    if (i != j) res = (mod - res) % mod;
+                    break;
+                }
+            if (mat[i][i] == 0) {
+                res = -1;
+                break;
+            }
+            for (int j = i + 1; j < n; j++) {
+                int mut = (mat[j][i] * INV(mat[i][i], mod)) % mod;
+                for (int k = i; k < n; k++)
+                    mat[j][k] =
+                        (mat[j][k] - (mat[i][k] * mut) % mod + mod) % mod;
+            }
+            res = (res * mat[i][i]) % mod;
+        }
+        return res;
+    }
+};
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        int g[301][301];
+        memset(g, 0, sizeof(g));
+        cin >> N >> R;
+        for (int i = 0; i < N; i++) scanf("%d%d", &P[i].x, &P[i].y);
+        for (int i = 0; i < N; i++)
+            for (int j = i + 1; j < N; j++)
+                if (check(i, j)) g[i][j] = g[j][i] = 1;
+        Matrix ret;
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                if (i != j && g[i][j] == 1) {
+                    ret.mat[i][j] = -1;
+                    ret.mat[i][i]++;
+                }
+        cout << ret.det(N - 1) << endl;
+    }
+    return 0;
+}
+```
+
 ## 匈牙利算法（二分图最大匹配） 
 
 复杂度 $O(n \times e + m)$, n 是左边点数量，m 是右边点数量，e 是图上边数量
