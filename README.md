@@ -2878,10 +2878,10 @@ int main() {
 
 ## 乘法逆元
 
-利用 Fermat 小定理用快速幂算逆元，注意要求 $p$ 必须是素数。
+利用 Fermat 小定理用快速幂算 $a$ 的逆元，注意要求模数 $p$ 必须是素数。
 
 ```cpp
-ll x = power(a, b - 2, mod);
+ll x = power(a, p - 2, mod);
 ```
 
 线性递推求逆元
