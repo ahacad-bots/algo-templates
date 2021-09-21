@@ -1677,7 +1677,67 @@ int main() {
 }
 ```
 
-## Matrix-tree theorem
+## Matrix tree theorem
+
+基尔霍夫矩阵的任意一个代数余子式是所有生成树的边权积的和。 $A = D - C$, $D$ 度数矩阵，$C$ 邻接矩阵。$z$ 全为 1 的时候就是生成树计数。
+
+```cpp
+#include <cstdio>
+#include <iostream>
+#define LL long long
+typedef long long ll;
+using namespace std;
+int n, m, t, x, y, z, ans = 1;
+const ll N = 305, mod = 1e9 + 7;
+ll a[N][N];
+ll power(ll base, ll power, ll p) {
+    ll result = 1;
+    while (power > 0) {
+        if (power & 1) {
+            result = result * base % p;
+        }
+        power >>= 1;
+        base = (base * base) % p;
+    }
+    return result;
+}
+void work() {
+    for (int i = 2, inv, tmp; i <= n; ++i) {
+        for (int j = i + 1; j <= n; ++j)
+            if (!a[i][i] && a[j][i]) {
+                ans = -ans;
+                swap(a[i], a[j]);
+                break;
+            }
+        inv = power(a[i][i], mod - 2, mod);
+        for (int j = i + 1; j <= n; ++j) {
+            tmp = (LL)a[j][i] * inv % mod;
+            for (int k = i; k <= n; ++k)
+                a[j][k] = (a[j][k] - (LL)a[i][k] * tmp % mod) % mod;
+        }
+    }
+}
+int main() {
+    cin >> n >> m >> t;
+    for (int i = 1; i <= m; ++i) {
+        scanf("%d%d%d", &x, &y, &z);
+        if (!t) {
+            (a[x][x] += z) %= mod;
+            (a[y][y] += z) %= mod;
+            (a[x][y] -= z) %= mod;
+            (a[y][x] -= z) %= mod;
+        } else {
+            (a[y][y] += z) %= mod;
+            (a[x][y] -= z) %= mod;
+        }
+    }
+    work();
+    for (int i = 2; i <= n; ++i) ans = (LL)ans * a[i][i] % mod;
+    cout << (ans % mod + mod) % mod;
+    return 0;
+}
+```
+
 
 ```cpp
 #include <math.h>
