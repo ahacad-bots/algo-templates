@@ -3716,6 +3716,14 @@ constexpr bool binary_search( ForwardIt first, ForwardIt last, const T& value );
 
 - 二分搜索判断一个值存不存在，返回 1 或者 0。注意需要先 `sort`！
 
+## `std::accumulate`
+
+```cpp
+template< class InputIt, class T >
+constexpr T accumulate( InputIt first, InputIt last, T init );
+```
+
+- 计算 $[first, last)$ 的和
 
 
 # 注意！
