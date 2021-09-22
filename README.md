@@ -3707,6 +3707,14 @@ constexpr ForwardIt upper_bound( ForwardIt first, ForwardIt last, const T& value
 - Returns an iterator pointing to the first element in the range [first, last) that is **greater than** value, or last if no such element is found.
 
 
+## `std::binary_search`
+
+```cpp
+template< class ForwardIt, class T >
+constexpr bool binary_search( ForwardIt first, ForwardIt last, const T& value );
+```
+
+- 二分搜索判断一个值存不存在，返回 1 或者 0。注意需要先 `sort`！
 
 
 
