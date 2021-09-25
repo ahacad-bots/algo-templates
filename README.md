@@ -2763,8 +2763,7 @@ int euler_phi(int n) {
 
 ## （扩展）欧拉定理
 
-
-
+$$a^b = \begin{cases}a^{b \mod \varphi(p)}, & gcd(a,p) = 1 \\ a^b, & gcd(a,p) \neq 1, b < \varphi(p)  \ (\mod \ p) \\ a ^{b \mod \varphi(p) + \varphi(p)}, & gcd(a,p) \neq 1, b \ge \varphi(p) \end{cases}$$
 
 ```cpp
 #include <cstdio>
