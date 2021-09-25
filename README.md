@@ -2741,6 +2741,13 @@ long long bsgs(long long a, long long b, long long p) {  // bsgs
 
 ## 欧拉函数
 
+$\varphi(n)$，小于等于 $n$ 的、和 $n$ 互质的数的个数。$\varphi(p) = p - 1, \text{p is prime}$。积性函数：$\varphi(a \times b) = \varphi(a) \times \varphi(b), \text{when} \ gcd(a, b) = 1$。
+
+一些有用的性质:
+- $\varphi(p^k) = p^k - p^{k-1}, \text{p is prime}$
+- 唯一分解定理可以得到 $n = \prod_{i=1}^s p_i^{k_i}$，于是有 $\varphi(n) = n \times \prod_{i=1}^s \frac{p_i - 1}{p_i}$。
+
+
 ```cpp
 int euler_phi(int n) {
   int ans = n;
@@ -2755,6 +2762,9 @@ int euler_phi(int n) {
 ```
 
 ## （扩展）欧拉定理
+
+
+
 
 ```cpp
 #include <cstdio>
