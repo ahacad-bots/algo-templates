@@ -20,13 +20,12 @@ typedef pair<int, int> pii;
 void init() {
     //
 }
-void solve() {
-    //
-}
 void clear() {
     //
 }
-
+void solve() {
+    //
+}
 int main() {
     ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
     
