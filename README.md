@@ -28,6 +28,13 @@ void solve() {
 }
 int main() {
     ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+    int T;
+    cin >> T;
+    rep(t, 1, T) {
+        init();
+        solve();
+        clear();
+    }
     
     return 0;
 }
