@@ -88,6 +88,86 @@ inline void write(T x) {
 
 # 树
 
+## 树上欧拉序
+
+dfs 时候进栈出栈都记录一次，得到欧拉序列。
+
+### $O(1)$判祖孙关系
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define rep(i, x, y) for (auto i = (x); i <= (y); i++)
+#define dep(i, x, y) for (auto i = (x); i >= (y); i--)
+#define DEBUG false
+#define ____ puts("\n_______________\n")
+#define debug(x) \
+    if (DEBUG) cout << #x << " => " << (x) << endl
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef pair<int, int> pii;
+
+const int N = 1e5 + 10;
+int n, m;
+int head[N], to[N], nxt[N], cnt;
+int root;
+void add(int x, int y) {  //链式前向星
+    to[++cnt] = y;
+    nxt[cnt] = head[x];
+    head[x] = cnt;
+}
+int ein[N], eout[N], tot;
+void dfs(int x) {
+    ein[x] = ++tot;
+    for (int i = head[x]; i; i = nxt[i]) {  // 遍历
+        int y = to[i];
+        if (!ein[y]) dfs(y);
+    }
+    eout[x] = ++tot;
+}
+void init() {
+    //
+}
+void clear() {
+    //
+}
+void solve() {
+    //
+}
+bool up(int x, int y) { return (ein[x] <= ein[y] && eout[x] >= eout[y]); }
+int main() {
+    ios::sync_with_stdio(false), cin.tie(0), cout.tie(0);
+    cin >> n;
+    int x, y;
+    rep(i, 1, n) {
+        cin >> x >> y;
+        if (y != -1) {
+            add(x, y), add(y, x);
+        } else {
+            root = x;
+        }
+    }
+    dfs(root);
+    cin >> m;
+    while (m--) {
+        cin >> x >> y;
+        if (up(x, y)) {
+            cout << 1 << endl;
+        } else if (up(y, x)) {
+            cout << 2 << endl;
+        } else {
+            cout << 0 << endl;
+        }
+    }
+
+    return 0;
+}
+```
+
+
+
 ## 线段树 (segment tree)
 
 ### 数组区间和
@@ -1059,6 +1139,8 @@ int qmax(int x, int y) {
 
 ## 最近公共祖先 (LCA)
 
+
+
 ## 左偏树（可并堆）
 
 ```cpp
@@ -1470,6 +1552,7 @@ signed main() {
     return 0;
 }
 ```
+
 
 ## （严格）次小生成树
 
