@@ -3411,6 +3411,24 @@ int main() {
 }
 ```
 
+## 摩尔投票法
+
+$O(n)$ 求众数
+
+```python
+def (nums):
+    res = cnt = 0
+    for num in nums:
+        if cnt == 0:
+            res = num
+            cnt += 1
+        elif res == num:
+            cnt += 1
+        else:
+            cnt -= 1
+    return res
+```
+
 # 计算几何
 
 计算几何通用头
