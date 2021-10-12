@@ -3740,6 +3740,14 @@ constexpr T accumulate( InputIt first, InputIt last, T init );
 
 - 计算 $[first, last)$ 的和
 
+# C++ USK
+
+## sort with lambda
+
+```cpp
+sort(a, a + 4, [](int a, int b) { return a > b; });
+```
+
 
 # 注意！
 
