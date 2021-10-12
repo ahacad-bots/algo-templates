@@ -1113,6 +1113,23 @@ int main() {
 ```
 
 # 图
+
+## 前向星建图
+
+```cpp
+int head[N],to[N],nxt[N],cnt;
+void add(int x,int y) { //链式前向星
+    to[++cnt]=y;
+    nxt[cnt]=head[x];
+    head[x]=cnt;
+}
+void dfs(int x) {
+    for(int i=head[x];i;i=nxt[i]) { // 遍历
+        int y=to[i];
+        dfs(y);
+    }
+}
+```
  
 ## 最短路 (TODO)
 
