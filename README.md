@@ -227,34 +227,36 @@ struct sgt {
 ### 数组区间最大值
 
 ```cpp
-int N, M, a[maxn];
-int maxA[maxn * 4];
-void pushup(int id) { maxA[id] = max(maxA[id << 1], maxA[id << 1 | 1]); }
-void build(int id, int l, int r) {
+const ll maxn = 3e5; // TODO: change maxn
+const ll inf = 1e20;  
+ll  la[maxn];        // 用来初始化的数组
+ll max1[maxn * 4];
+void pushup(ll id) { max1[id] = max(max1[id << 1], max1[id << 1 | 1]); }
+void build(ll id, ll l, ll r) {
     if (l == r) {
-        maxA[id] = a[l];
+        max1[id] = la[l];
         return;
     }
-    int mid = (l + r) >> 1;
+    ll mid = (l + r) >> 1;
     build(id << 1, l, mid);
     build(id << 1 | 1, mid + 1, r);
     pushup(id);
 }
-void update(int id, int l, int r, int x, int v) {
+void update(ll id, ll l, ll r, ll x, ll v) {
     if (l == r) {
-        maxA[id] = v;
+        max1[id] = v;
         return;
     }
-    int mid = (l + r) >> 1;
+    ll mid = (l + r) >> 1;
     if (x <= mid)
         update(id << 1, l, mid, x, v);
     else
         update(id << 1 | 1, mid + 1, r, x, v);
     pushup(id);
 }
-int query(int id, int l, int r, int x, int y) {
-    if (x <= l && y >= r) return maxA[id];
-    int mid = (l + r) >> 1, ret = -inf;
+ll query(ll id, ll l, ll r, ll x, ll y) {
+    if (x <= l && y >= r) return max1[id];
+    ll mid = (l + r) >> 1, ret = -inf;
     if (x <= mid) ret = max(ret, query(id << 1, l, mid, x, y));
     if (y > mid) ret = max(ret, query(id << 1 | 1, mid + 1, r, x, y));
     return ret;
