@@ -3821,6 +3821,10 @@ struct cmp1 {
 priority_queue<node, vector<node>, cmp1> q;  
 ```
 
+## vector
+
+- `constexpr void assign( size_type count, const T& value );`: 替换 vector 中元素 
+
 # STL Algorithms
 
 ## `std::lower_bound`
@@ -3859,6 +3863,9 @@ constexpr T accumulate( InputIt first, InputIt last, T init );
 ```
 
 - 计算 $[first, last)$ 的和
+
+
+
 
 # C++ USK
 
