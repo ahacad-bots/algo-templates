@@ -3531,6 +3531,22 @@ def (nums):
     return res
 ```
 
+## 离散化
+
+```cpp
+int main() {
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++) scanf("%d", &a[i]), dis[i] = a[i];
+    sort(dis + 1, dis + n + 1);
+    int num = unique(dis + 1, dis + n + 1) - dis - 1;
+    for (int i = 1; i <= n; i++)
+        a[i] = lower_bound(dis + 1, dis + num + 1, a[i]) - dis;
+    for (int i = 1; i <= n; i++) printf("%d ", dis[a[i]]);
+    return 0;
+}
+
+```
+
 # 计算几何
 
 计算几何通用头
