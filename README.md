@@ -2104,7 +2104,225 @@ int main() {
 }
 ```
 
-## 网络流 (TODO)
+## 网络流
+
+#### Dinic
+
+> 99%的网络流算法，都可以用Dinic去解。卡Dinic的毒瘤出题人，都是*哔*
+
+```cpp
+#include <bits/stdc++.h>
+#define up(l, r, i) for (int i = l; i <= r; i++)
+#define lw(l, r, i) for (int i = l; i >= r; i--)
+using namespace std;
+const int MAXN = 10000 + 3;
+const int MAXM = 100000 + 3;
+const int INF = 2147483647;
+typedef long long LL;
+inline int qread() {
+    int w = 1, c, ret;
+    while ((c = getchar()) > '9' || c < '0')
+        ;
+    ret = c - '0';
+    while ((c = getchar()) >= '0' && c <= '9') ret = ret * 10 + c - '0';
+    return ret * w;
+}
+int n, m, s, t, t1, t2, t3, mxflow;
+int tot = 1, head[MAXN], nxt[MAXM * 2], ver[MAXM * 2], val[MAXM * 2];
+void add(int u, int v, int k) {
+    ver[++tot] = v, val[tot] = k, nxt[tot] = head[u], head[u] = tot;
+    ver[++tot] = u, val[tot] = 0, nxt[tot] = head[v], head[v] = tot;
+}
+int dis[MAXN], cur[MAXN];
+int q[MAXN], front, rear;
+bool bfs() {
+    memset(dis, 0, sizeof(dis));
+    front = rear = 1, q[rear++] = s, dis[s] = 1;
+    while (front < rear) {
+        int u = q[front++];
+        for (int i = head[u]; i; i = nxt[i]) {
+            int v = ver[i];
+            if (dis[v] || !val[i]) continue;
+            q[rear++] = v, dis[v] = dis[u] + 1;
+        }
+    }
+    return dis[t];
+}
+int dfs(int u, int flow) {
+    if (u == t && ((mxflow += flow) || 1)) return flow;
+    int used = 0;
+    for (int &i = cur[u]; i; i = nxt[i]) {
+        int v = ver[i];
+        if (dis[v] == dis[u] + 1) {
+            int lft = dfs(v, min(flow - used, val[i]));
+            if (lft) val[i] -= lft, val[i ^ 1] += lft, used += lft;
+            if (used == flow) return flow;
+        }
+    }
+    return used;
+}
+int main() {
+    n = qread(), m = qread(), s = qread(), t = qread();
+    up(1, m, i) t1 = qread(), t2 = qread(), t3 = qread(), add(t1, t2, t3);
+    while (bfs()) memcpy(cur, head, sizeof(head)), dfs(s, INF);
+    cout << mxflow << endl;
+    return 0;
+}
+```
+
+#### Edmond-Karp
+
+bfs 跑增广路，比 FF 好得多
+
+```cpp
+#include <bits/stdc++.h>
+#define up(l, r, i) for (register int i = l; i <= r; ++i)
+#define erg(u) for (int i = head[u], v = ver[i]; i; i = nxt[i], v = ver[i])
+const int INF = 2147483647;
+const int MAXN = 10000 + 3, MAXM = 100000 + 3;
+using namespace std;
+bool vis[MAXN];
+int n, m, s, t, tot = 1, U, V, K, ans;
+int head[MAXN], nxt[MAXM * 2], ver[MAXM * 2], val[MAXM * 2];
+inline void add(int u, int v, int k) {  //加边
+    ver[++tot] = v, val[tot] = k, nxt[tot] = head[u], head[u] = tot;
+    ver[++tot] = u, val[tot] = 0, nxt[tot] = head[v], head[v] = tot;
+}
+int q[MAXN][4], front, rear;
+inline int EK() {  //主过程
+    memset(vis, 0, sizeof(vis)), vis[s] = true;
+    front = rear = 1, q[rear][0] = s, q[rear++][3] = INF;
+    for (int u = q[front][0]; front < rear; u = q[++front][0])
+        erg(u) {                          //遍历当前节点
+            if (!vis[v] && val[i] > 0) {  //判断可行性
+                q[rear][0] = v, q[rear][1] = i, q[rear][2] = front,
+                q[rear++][3] = min(val[i], q[front][3]), vis[v] = true;
+                if (v == t) goto end;  //到达终点直接跳出
+            }
+        }
+    return false;
+end:
+    rear--;
+    for (int i = rear, flw = q[rear][3]; q[i][2]; i = q[i][2])
+        val[q[i][1]] -= flw, val[q[i][1] ^ 1] += flw;
+    return q[rear][3];
+}
+int main() {
+    scanf("%d%d%d%d", &n, &m, &s, &t), vis[s] = true;
+    up(1, m, i) scanf("%d%d%d", &U, &V, &K), add(U, V, K);
+    for (int p; p = EK();) ans += p;
+    printf("%d\n", ans);
+    return 0;
+}
+```
+
+
+#### Ford Fulksonff
+
+dfs 找增广路，被卡爆炸了别怪我（
+
+```cpp
+#include <bits/stdc++.h>
+#define up(l, r, i) for (register int i = l; i <= r; ++i)
+#define ergv(u)                                                               \
+    for (std::vector<edge>::iterator p = head[u].begin(); p != head[u].end(); \
+         ++p)
+#define ergl(u) \
+    for (std::list<int>::iterator p = lst[u].begin(); p != lst[u].end(); ++p)
+const int INF = 2147483647;
+const int MAXN = 10000 + 3, MAXM = 100000 + 3;
+using namespace std;
+bool vis[MAXN];
+int n, m, s, t, tot = 1, U, V, K, ans;
+int head[MAXN], nxt[MAXM * 2], ver[MAXM * 2], val[MAXM * 2];
+inline void add(int u, int v, int k) {  //加边
+    ver[++tot] = v, val[tot] = k, nxt[tot] = head[u], head[u] = tot;
+    ver[++tot] = u, val[tot] = 0, nxt[tot] = head[v], head[v] = tot;
+}
+inline int FF(int u, int flw) {  //主过程
+    if (u == t) return flw;
+    vis[u] = true;  //到达终点
+    for (int i = head[u]; i; i = nxt[i])
+        if (val[i] > 0 && !vis[ver[i]]) {
+            int lft = FF(ver[i], min(flw, val[i]));
+            if (!lft) continue;  //增广路寻找失败
+            val[i] -= lft, val[i ^ 1] += lft, vis[u] = false;
+            return lft;
+        }
+    return vis[u] = false;  // vis函数防止出现环
+}
+int main() {
+    scanf("%d%d%d%d", &n, &m, &s, &t), vis[s] = true;
+    up(1, m, i) scanf("%d%d%d", &U, &V, &K), add(U, V, K);
+    for (int p; p = FF(s, INF);) ans += p;
+    printf("%d\n", ans);
+    return 0;
+}
+```
+
+#### ISAP
+
+```cpp
+#include <bits/stdc++.h>
+#define up(l, r, i) for (register int i = l; i <= r; ++i)
+#define lw(l, r, i) for (register int i = l; i >= r; --i)
+using namespace std;
+const int MAXN = 1200 + 3;
+const int MAXM = 120000 + 3;
+const int INF = 2147483647;
+typedef long long LL;
+inline int qread() {
+    int w = 1, c, ret;
+    while ((c = getchar()) > '9' || c < '0')
+        ;
+    ret = c - '0';
+    while ((c = getchar()) >= '0' && c <= '9') ret = ret * 10 + c - '0';
+    return ret * w;
+}
+int n, m, s, t, t1, t2, t3, mxflow;
+int tot = 1, head[MAXN], nxt[MAXM * 2], ver[MAXM * 2], val[MAXM * 2];
+inline void add(int u, int v, int k) {
+    ver[++tot] = v, val[tot] = k, nxt[tot] = head[u], head[u] = tot;
+    ver[++tot] = u, val[tot] = 0, nxt[tot] = head[v], head[v] = tot;
+}
+int dis[MAXN], cur[MAXN];
+int gap[MAXN], q[MAXN], front, rear;
+inline void bfs() {
+    front = rear = 1, q[rear++] = t, gap[dis[t] = 1]++;
+    while (front < rear) {
+        int u = q[front++];
+        for (int i = head[u]; i; i = nxt[i]) {
+            int v = ver[i];
+            if (dis[v]) continue;
+            q[rear++] = v, gap[dis[v] = dis[u] + 1]++;
+        }
+    }
+}
+int dfs(int u, int flow) {
+    if (u == t && ((mxflow += flow) || 1)) return flow;
+    int used = 0;
+    for (int &i = cur[u]; i; i = nxt[i]) {
+        int v = ver[i];
+        if (dis[v] == dis[u] - 1) {
+            int lft = dfs(v, min(flow - used, val[i]));
+            if (lft) val[i] -= lft, val[i ^ 1] += lft, used += lft;
+            if (used == flow) return flow;
+        }
+    }
+    (--gap[dis[u]]) ? (++gap[++dis[u]]) : dis[s] = n + 1;
+    return used;
+}
+int main() {
+    n = qread(), m = qread(), s = qread(), t = qread();
+    up(1, m, i) t1 = qread(), t2 = qread(), t3 = qread(), add(t1, t2, t3);
+    bfs();
+    while (dis[s] <= n) memcpy(cur, head, sizeof(head)), dfs(s, INF);
+    cout << mxflow << endl;
+    return 0;
+}
+```
+
+#### HLPP (TODO)
 
 ## 拓扑序
 
