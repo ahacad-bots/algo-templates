@@ -3812,6 +3812,8 @@ int main() {
 
 计算几何通用头
 
+**900 行的大模板在 [./geometry](./geometry.md) 里面**，下面的已经被淘汰。
+
 ```cpp
 namespace geometry {
 
