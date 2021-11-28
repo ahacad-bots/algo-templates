@@ -4170,3 +4170,4 @@ sort(a, a + 4, [](int a, int b) { return a > b; });
 # References
 
 - [ACM-axiomofchoice](https://github.com/axiomofchoice-hjt/ACM-axiomofchoice)
+- [南京大学 ACM 队 EC Final Template](https://upload-file.xcpcio.com/Code-Library/NJU-Calabash-Release-For-EC-Final.pdf)
