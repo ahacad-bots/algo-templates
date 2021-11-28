@@ -4166,3 +4166,7 @@ sort(a, a + 4, [](int a, int b) { return a > b; });
 - 题意读错，漏掉细节，看清楚到底要求什么、题目的一些细小限制
 - 忘了重置相关数组和变量
 
+
+# References
+
+- [ACM-axiomofchoice](https://github.com/axiomofchoice-hjt/ACM-axiomofchoice)
