@@ -483,8 +483,8 @@ int main() {
 ```cpp
 #define lowbit(x) ((x) & -(x))
 ll arr[N]; void add(ll x, ll k){ while(x <= n){ arr[x] += k; x += lowbit(x); } }
-ll qry(ll x){ll sum = 0; while(x) {sum += arr[x]; x -= lowbit(x);} return sum;}
-ll qry(ll l , ll r){return qry(r) - qry(l - 1);}
+ll _qry(ll x){ll sum = 0; while(x) {sum += arr[x]; x -= lowbit(x);} return sum;}
+ll qry(ll l , ll r){return _qry(r) - _qry(l - 1);}
 ```
 
 ### 区间查询区间修改
