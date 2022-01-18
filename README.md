@@ -3023,7 +3023,7 @@ int Eratosthenes(int n) {
 
 ```cpp
 const int MAXN = 1e8 + 10;
-int divisions[MAXN] // euler 筛还可以顺便算出每个数字的因子个数
+int divisions[MAXN]; // euler 筛还可以顺便算出每个数字的因子个数
 int prime[MAXN];  //保存素数，注意下面的实现 prime 从 0 开始
 bool vis[MAXN];   //初始化
 int Prime(int n) {
